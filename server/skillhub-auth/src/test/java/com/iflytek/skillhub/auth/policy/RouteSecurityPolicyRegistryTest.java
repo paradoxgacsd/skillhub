@@ -94,6 +94,41 @@ class RouteSecurityPolicyRegistryTest {
     }
 
     @Test
+    void mediaRoutesHaveExplicitAuthorizationPolicies() {
+        boolean publicRead = registry.authorizationPolicies().stream()
+                .anyMatch(policy -> policy.method() == HttpMethod.GET
+                        && "/api/v1/media/*".equals(policy.pattern())
+                        && policy.accessLevel() == RouteSecurityPolicyRegistry.AccessLevel.PERMIT_ALL);
+        boolean uploadRequiresAuth = registry.authorizationPolicies().stream()
+                .anyMatch(policy -> policy.method() == HttpMethod.POST
+                        && "/api/v1/media".equals(policy.pattern())
+                        && policy.accessLevel() == RouteSecurityPolicyRegistry.AccessLevel.AUTHENTICATED);
+        boolean versionRead = registry.authorizationPolicies().stream()
+                .anyMatch(policy -> policy.method() == HttpMethod.GET
+                        && "/api/web/skills/*/*/versions/*/media".equals(policy.pattern())
+                        && policy.accessLevel() == RouteSecurityPolicyRegistry.AccessLevel.PERMIT_ALL);
+
+        assertTrue(publicRead);
+        assertTrue(uploadRequiresAuth);
+        assertTrue(versionRead);
+    }
+
+    @Test
+    void apiTokenPolicyRequiresPublishScopeForMediaWrites() {
+        assertTrue(registry.authorizeApiToken("GET", "/api/v1/media/42", Set.of()).allowed());
+
+        var denied = registry.authorizeApiToken("POST", "/api/v1/media", Set.of("skill:read"));
+        var versionDenied = registry.authorizeApiToken(
+                "POST", "/api/web/skills/team/demo/versions/1.0.0/media", Set.of("skill:read"));
+
+        assertFalse(denied.allowed());
+        assertEquals("skill:publish", denied.requiredScope());
+        assertFalse(versionDenied.allowed());
+        assertEquals("skill:publish", versionDenied.requiredScope());
+        assertTrue(registry.authorizeApiToken("POST", "/api/v1/media", Set.of("skill:publish")).allowed());
+    }
+
+    @Test
     void shouldIgnoreCsrf_forBearerAndApiPaths() {
         assertTrue(registry.shouldIgnoreCsrf("/api/v1/admin/users", null));
         assertTrue(registry.shouldIgnoreCsrf("/not-api", "Bearer token"));

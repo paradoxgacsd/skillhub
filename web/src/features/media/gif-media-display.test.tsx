@@ -69,4 +69,23 @@ describe('GifMediaDisplay', () => {
     render(<GifMediaDisplay src="/api/v1/media/2" coverSrc="/cover.png" alt="演示" lazy={false} />)
     expect(screen.getByTestId('gif-media-img')).not.toBeNull()
   })
+  it('clears the error fallback when src changes', () => {
+    const { rerender } = render(<GifMediaDisplay src="/api/v1/media/2" coverSrc="/cover.png" alt="demo" lazy={false} />)
+    fireEvent.error(screen.getByTestId('gif-media-img'))
+    expect(screen.getByAltText('demo').getAttribute('src')).toBe('/cover.png')
+
+    rerender(<GifMediaDisplay src="/api/v1/media/3" coverSrc="/cover.png" alt="demo" lazy={false} />)
+
+    const img = screen.getByTestId('gif-media-img') as HTMLImageElement
+    expect(img.src).toContain('/api/v1/media/3')
+  })
+
+  it('switches to eager loading when lazy changes to false', () => {
+    const { rerender } = render(<GifMediaDisplay src="/api/v1/media/2" coverSrc="/cover.png" alt="demo" />)
+    expect(screen.queryByTestId('gif-media-img')).toBeNull()
+
+    rerender(<GifMediaDisplay src="/api/v1/media/2" coverSrc="/cover.png" alt="demo" lazy={false} />)
+
+    expect(screen.getByTestId('gif-media-img')).not.toBeNull()
+  })
 })

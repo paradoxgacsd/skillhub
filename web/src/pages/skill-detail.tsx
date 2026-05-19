@@ -9,6 +9,7 @@ import { FilePreviewDialog } from '@/features/skill/file-preview-dialog'
 import type { FileTreeNode } from '@/features/skill/file-tree-builder'
 import { InstallCommand } from '@/features/skill/install-command'
 import { ShareButton } from '@/features/skill/share-button'
+import { GifMediaDisplay } from '@/features/media/gif-media-display'
 import { SkillLabelPanel } from '@/features/skill/skill-label-panel'
 import {
   getOverviewCollapseMaxHeight,
@@ -46,6 +47,7 @@ import {
   useSkillDetail,
   useSkillVersions,
   useSkillVersionDetail,
+  useSkillVersionMedia,
   useSkillFiles,
   useSkillReadme,
   useSkillFile,
@@ -147,6 +149,7 @@ export function SkillDetailPage() {
   const selectedVersion = headlineVersion?.version ?? versions?.[0]?.version
   const selectedVersionEntry = versions?.find((version) => version.version === selectedVersion) ?? versions?.[0]
   const { data: files } = useSkillFiles(qns, qslug, selectedVersion, skillReady)
+  const { data: mediaAssets } = useSkillVersionMedia(qns, qslug, selectedVersion, skillReady)
   const documentationPath = resolveDocumentationFilePath(files)
   const { data: readme, error: readmeError } = useSkillReadme(qns, qslug, selectedVersion, documentationPath, skillReady)
   const { data: previewContent, isLoading: isLoadingPreview, error: previewError } = useSkillFile(
@@ -179,6 +182,8 @@ export function SkillDetailPage() {
   const canHardDeleteSkill = Boolean(skill && user && (skill.ownerId === user.userId || hasRole('SUPER_ADMIN')))
   const canManageLabels = Boolean(skill && user && (skill.canManageLifecycle || hasRole('SUPER_ADMIN')))
   const isVersionDownloadable = selectedVersionEntry?.status === 'PUBLISHED' && (selectedVersionEntry?.downloadAvailable ?? false)
+  const demoMedia = mediaAssets?.find((asset) => asset.role === 'DEMO')
+  const coverMedia = mediaAssets?.find((asset) => asset.role === 'COVER')
 
   useEffect(() => {
     // Recompute collapse rules whenever rendered documentation height changes so the page can keep
@@ -775,6 +780,17 @@ export function SkillDetailPage() {
           )}
           {skill.summary && (
             <p className="text-lg text-muted-foreground leading-relaxed">{skill.summary}</p>
+          )}
+          {demoMedia && (
+            <div className="overflow-hidden rounded-xl border border-border/60 bg-background shadow-sm">
+              <GifMediaDisplay
+                src={demoMedia.url}
+                coverSrc={coverMedia?.url}
+                alt={demoMedia.altText ?? skill.displayName}
+                lazy={false}
+                className="aspect-video w-full bg-muted [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_[role=img]]:h-full"
+              />
+            </div>
           )}
           {(skill.labels?.length ?? 0) > 0 && (
             <div className="flex flex-wrap gap-2">

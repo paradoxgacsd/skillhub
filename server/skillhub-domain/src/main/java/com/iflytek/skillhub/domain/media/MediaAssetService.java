@@ -33,7 +33,8 @@ public class MediaAssetService {
         byte[] header = new byte[Math.min(16, command.bytes().length)];
         System.arraycopy(command.bytes(), 0, header, 0, header.length);
 
-        MediaType detected = validator.validateAndClassify(header, command.bytes().length, command.contentType());
+        MediaType detected = validator.validateAndClassify(
+                header, command.bytes().length, command.contentType(), command.ownerType());
         String sha256 = hasher.sha256(command.bytes());
         String objectKey = "media/" + command.ownerType().name().toLowerCase() + "/" + command.ownerId() + "/" + sha256
                 + extensionFor(command.contentType(), detected);
@@ -57,6 +58,10 @@ public class MediaAssetService {
 
     public byte[] read(Long id) {
         MediaAsset asset = get(id);
+        return read(asset);
+    }
+
+    public byte[] read(MediaAsset asset) {
         return storage.get(asset.getObjectKey());
     }
 
@@ -81,14 +86,14 @@ public class MediaAssetService {
                                 String altText,
                                 String uploader) {}
 
-    /** Storage adapter — implementations live in {@code skillhub-storage}. */
+    /** Storage adapter; implementations live in {@code skillhub-storage}. */
     public interface MediaStorage {
         void put(String key, byte[] bytes, String contentType);
 
         byte[] get(String key);
     }
 
-    /** Hashing seam so unit tests can stub deterministically. */
+    /** Hashing adapter so unit tests can stub deterministically. */
     public interface MediaHasher {
         String sha256(byte[] bytes);
     }

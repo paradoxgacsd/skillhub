@@ -6,6 +6,7 @@ const hasRoleMock = vi.fn<(role: string) => boolean>((role: string) => role === 
 const useSkillDetailMock = vi.fn()
 const useSkillLabelsMock = vi.fn()
 const useSkillVersionsMock = vi.fn()
+const useSkillVersionMediaMock = vi.fn()
 let authState: {
   user: { userId: string; platformRoles: string[] } | null
   hasRole: (role: string) => boolean
@@ -106,6 +107,7 @@ vi.mock('@/shared/hooks/use-skill-queries', () => ({
   useAttachSkillLabel: () => ({ mutate: vi.fn(), isPending: false }),
   useDetachSkillLabel: () => ({ mutate: vi.fn(), isPending: false }),
   useSkillVersions: (...args: unknown[]) => useSkillVersionsMock(...args),
+  useSkillVersionMedia: (...args: unknown[]) => useSkillVersionMediaMock(...args),
   useSkillVersionDetail: () => ({ data: undefined }),
   useSkillFiles: () => ({ data: [] }),
   useSkillReadme: () => ({ data: '# Demo', error: null }),
@@ -133,6 +135,12 @@ vi.mock('@/shared/hooks/use-label-queries', () => ({
 
 vi.mock('@/shared/hooks/use-user-queries', () => ({
   useSubmitPromotion: () => ({ mutateAsync: vi.fn(), isPending: false }),
+}))
+
+vi.mock('@/features/media/gif-media-display', () => ({
+  GifMediaDisplay: ({ src, coverSrc, alt }: { src: string; coverSrc?: string | null; alt: string }) => (
+    <div>__GIF_MEDIA__{src}|{coverSrc ?? ''}|{alt}</div>
+  ),
 }))
 
 import { SkillDetailPage } from './skill-detail'
@@ -193,6 +201,9 @@ describe('SkillDetailPage', () => {
         },
       ],
     })
+    useSkillVersionMediaMock.mockReturnValue({
+      data: [],
+    })
     useSkillLabelsMock.mockReturnValue({
       data: undefined,
     })
@@ -239,6 +250,41 @@ describe('SkillDetailPage', () => {
     expect(html).toContain('install')
     expect(html).not.toContain('skillDetail.loginRequired')
     expect(html).not.toContain('skillDetail.deleteSkill')
+  })
+
+  it('renders version demo media on the detail page', () => {
+    useSkillVersionMediaMock.mockReturnValue({
+      data: [
+        {
+          id: 201,
+          ownerType: 'SKILL_VERSION',
+          ownerId: 10,
+          mediaType: 'IMAGE',
+          role: 'COVER',
+          url: '/api/v1/media/201',
+          contentType: 'image/png',
+          sizeBytes: 20,
+          createdAt: '2026-03-20T00:00:00Z',
+        },
+        {
+          id: 202,
+          ownerType: 'SKILL_VERSION',
+          ownerId: 10,
+          mediaType: 'GIF',
+          role: 'DEMO',
+          url: '/api/v1/media/202',
+          contentType: 'image/gif',
+          sizeBytes: 40,
+          altText: 'Demo animation',
+          createdAt: '2026-03-20T00:00:00Z',
+        },
+      ],
+    })
+
+    const html = renderToStaticMarkup(<SkillDetailPage />)
+
+    expect(useSkillVersionMediaMock).toHaveBeenCalledWith('global', 'demo-skill', '1.0.0', true)
+    expect(html).toContain('__GIF_MEDIA__/api/v1/media/202|/api/v1/media/201|Demo animation')
   })
 
   it('shows the label management panel for a user who can manage the skill lifecycle', () => {

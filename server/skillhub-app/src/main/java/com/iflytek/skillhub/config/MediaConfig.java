@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Wires up the {@link MediaValidator} with file-size limits sourced from
- * {@code skillhub.media.*}. Defaults are 10MB / 10MB matching the design doc.
+ * {@code skillhub.media.*}. Defaults are 10MB images/GIFs and 5MB promotion GIFs.
  */
 @Configuration
 public class MediaConfig {
@@ -20,7 +20,11 @@ public class MediaConfig {
 
     @Bean
     public MediaValidator mediaValidator(MediaProperties properties) {
-        return new MediaValidator(properties.getMaxGifSize(), properties.getMaxImageSize());
+        return new MediaValidator(
+                properties.getMaxGifSize(),
+                properties.getMaxImageSize(),
+                properties.getMaxPromotionGifSize()
+        );
     }
 
     public static class MediaProperties {

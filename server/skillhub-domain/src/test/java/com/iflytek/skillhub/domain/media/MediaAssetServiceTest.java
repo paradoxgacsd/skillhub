@@ -31,7 +31,7 @@ class MediaAssetServiceTest {
     @BeforeEach
     void setUp() {
         repository = mock(MediaAssetRepository.class);
-        validator = new MediaValidator(10_000, 5_000);
+        validator = new MediaValidator(10_000, 5_000, 1_000);
         storage = mock(MediaAssetService.MediaStorage.class);
         hasher = mock(MediaAssetService.MediaHasher.class);
         service = new MediaAssetService(repository, validator, storage, hasher);
@@ -109,5 +109,18 @@ class MediaAssetServiceTest {
         byte[] data = service.read(99L);
 
         assertThat(data).containsExactly(1, 2, 3, 4);
+    }
+
+    @Test
+    void read_existingAssetDoesNotQueryRepositoryAgain() {
+        MediaAsset asset = new MediaAsset(MediaOwnerType.SKILL_VERSION, 7L, MediaType.GIF,
+                MediaAssetRole.DEMO, "media/skill_version/7/abcd1234.gif", "image/gif",
+                4, "abcd1234", "alice");
+        given(storage.get("media/skill_version/7/abcd1234.gif")).willReturn(new byte[] {1, 2, 3, 4});
+
+        byte[] data = service.read(asset);
+
+        assertThat(data).containsExactly(1, 2, 3, 4);
+        verify(repository, never()).findById(any());
     }
 }

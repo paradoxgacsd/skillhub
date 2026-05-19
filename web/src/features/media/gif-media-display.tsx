@@ -30,6 +30,11 @@ export function GifMediaDisplay({ src, coverSrc, alt, lazy = true, className }: 
   const [errored, setErrored] = useState(false)
 
   useEffect(() => {
+    setShouldLoadGif(!lazy)
+    setErrored(false)
+  }, [src, lazy])
+
+  useEffect(() => {
     if (shouldLoadGif) return
     if (!containerRef.current) return
 

@@ -1,3 +1,6 @@
+import type { MediaAsset, MediaAssetRole, MediaOwnerType } from '@/api/types'
+import { WEB_API_PREFIX, fetchJson } from '@/api/client'
+
 /**
  * Minimal media API client used by detail pages and the upload UI.
  */
@@ -15,23 +18,6 @@ function getCsrfToken(): string | null {
   return match ? decodeURIComponent(match[1]) : null
 }
 
-export type MediaOwnerType = 'SKILL_VERSION' | 'SKILL_BUNDLE_VERSION' | 'PROMOTION_CAMPAIGN'
-export type MediaAssetRole = 'COVER' | 'DEMO' | 'SCREENSHOT'
-export type MediaType = 'IMAGE' | 'GIF'
-
-export type MediaAsset = {
-  id: number
-  ownerType: MediaOwnerType
-  ownerId: number
-  mediaType: MediaType
-  role: MediaAssetRole
-  url: string
-  contentType: string
-  sizeBytes: number
-  altText?: string | null
-  createdAt: string
-}
-
 /**
  * URL helper for an asset id. Used by cards / details / promotion slots so they
  * don't hand-write the path (and so the path can be swapped later if we move to
@@ -40,6 +26,13 @@ export type MediaAsset = {
 export function mediaUrl(id: number | null | undefined): string | null {
   if (!id || id <= 0) return null
   return `/api/v1/media/${id}`
+}
+
+export async function getSkillVersionMedia(namespace: string, slug: string, version: string): Promise<MediaAsset[]> {
+  const cleanNamespace = namespace.startsWith('@') ? namespace.slice(1) : namespace
+  return fetchJson<MediaAsset[]>(
+    `${WEB_API_PREFIX}/skills/${cleanNamespace}/${encodeURIComponent(slug)}/versions/${encodeURIComponent(version)}/media`
+  )
 }
 
 export const mediaApi = {

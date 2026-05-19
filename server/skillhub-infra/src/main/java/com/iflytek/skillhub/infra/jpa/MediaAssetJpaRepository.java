@@ -24,7 +24,6 @@ public interface MediaAssetJpaRepository extends JpaRepository<MediaAsset, Long>
     List<MediaAsset> findByOwner(@Param("ownerType") MediaOwnerType ownerType,
                                  @Param("ownerId") Long ownerId);
 
-    @Override
     @Query("""
         SELECT m FROM MediaAsset m
         WHERE m.ownerType = :ownerType AND m.ownerId = :ownerId AND m.role = :role

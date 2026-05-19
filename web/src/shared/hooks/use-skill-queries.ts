@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { SkillSummary, SkillDetail, SkillVersion, SkillVersionDetail, SkillVersionCompare, SkillFile, SearchParams, PagedResponse, PublishResult } from '@/api/types'
 import { fetchJson, fetchText, getCsrfHeaders, skillLifecycleApi, WEB_API_PREFIX } from '@/api/client'
 import { clearDeletedSkillQueries } from '@/features/skill/skill-delete-flow'
+import { getSkillVersionMedia } from '@/features/media/api'
 import { getSkillDetailQueryKey } from './query-keys'
 import { buildSkillSearchUrl } from './skill-query-helpers'
 
@@ -88,6 +89,14 @@ export function useSkillFiles(namespace: string, slug: string, version?: string,
   return useQuery({
     queryKey: ['skills', namespace, slug, 'versions', version, 'files'],
     queryFn: () => getSkillFiles(namespace, slug, version!),
+    enabled: enabled && !!namespace && !!slug && !!version,
+  })
+}
+
+export function useSkillVersionMedia(namespace: string, slug: string, version?: string, enabled = true) {
+  return useQuery({
+    queryKey: ['skills', namespace, slug, 'versions', version, 'media'],
+    queryFn: () => getSkillVersionMedia(namespace, slug, version!),
     enabled: enabled && !!namespace && !!slug && !!version,
   })
 }

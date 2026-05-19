@@ -275,6 +275,23 @@ export interface SkillFile {
   sha256: string
 }
 
+export type MediaOwnerType = 'SKILL_VERSION' | 'SKILL_BUNDLE_VERSION' | 'PROMOTION_CAMPAIGN'
+export type MediaAssetRole = 'COVER' | 'DEMO' | 'SCREENSHOT'
+export type MediaType = 'IMAGE' | 'GIF'
+
+export interface MediaAsset {
+  id: number
+  ownerType: MediaOwnerType
+  ownerId: number
+  mediaType: MediaType
+  role: MediaAssetRole
+  url: string
+  contentType: string
+  sizeBytes: number
+  altText?: string | null
+  createdAt: string
+}
+
 export interface SkillVersionCompareLine {
   type: 'CONTEXT' | 'ADD' | 'DELETE' | string
   content: string
