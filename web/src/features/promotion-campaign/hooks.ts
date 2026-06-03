@@ -3,6 +3,7 @@ import {
   promotionCampaignApi,
   type CampaignStatus,
   type CreateCampaignPayload,
+  type PromotionEventType,
 } from './api'
 
 const PROMOTION_CAMPAIGN_KEY = ['promotion-campaigns'] as const
@@ -37,6 +38,13 @@ export function useRejectPromotionCampaign() {
     mutationFn: ({ id, comment }: { id: number; comment?: string }) =>
       promotionCampaignApi.reject(id, comment),
     onSuccess: () => qc.invalidateQueries({ queryKey: PROMOTION_CAMPAIGN_KEY }),
+  })
+}
+
+export function useRecordPromotionEvent() {
+  return useMutation({
+    mutationFn: ({ id, eventType }: { id: number; eventType: PromotionEventType }) =>
+      promotionCampaignApi.recordEvent(id, eventType),
   })
 }
 

@@ -329,6 +329,7 @@
     "openTokens": "View API Tokens",
     "governanceTitle": "Review & Governance",
     "viewGovernance": "Open Governance Center",
+    "promotionsTitle": "Promotion Management",
     "viewPromotions": "View Promotions",
     "reportsTitle": "Report Management",
     "viewReports": "View skill reports",
@@ -551,6 +552,24 @@
     "reject": "Reject",
     "empty": "No promotion requests",
     "campaigns": {
+      "createTitle": "Create promotion campaign",
+      "createSubtitle": "Submit a skill or bundle for placement in a configured promotion slot.",
+      "createAction": "Create campaign",
+      "creating": "Creating...",
+      "formTargetType": "Target type",
+      "formTargetId": "Target ID",
+      "formVersionId": "Version ID (optional)",
+      "formSlot": "Promotion slot",
+      "formTitle": "Campaign title",
+      "formSubtitle": "Subtitle",
+      "formPriority": "Priority",
+      "formStartsAt": "Starts at",
+      "formEndsAt": "Ends at",
+      "formCoverMediaId": "Cover media ID",
+      "formDemoMediaId": "Demo media ID",
+      "formReason": "Reason",
+      "targetSkill": "Skill",
+      "targetBundle": "Skill bundle",
       "tabPendingReview": "Pending review",
       "tabScheduled": "Scheduled",
       "tabActive": "Active",
@@ -560,8 +579,20 @@
       "slot": "Slot",
       "priority": "Priority",
       "schedule": "Schedule",
-      "submittedBy": "Submitted by"
+      "submittedBy": "Submitted by",
+      "errors": {
+        "targetId": "Enter a valid target ID.",
+        "title": "Enter a campaign title.",
+        "priority": "Priority must be between 0 and 100.",
+        "timeWindow": "The end time must be later than the start time."
+      }
     }
+  },
+  "promotionSlots": {
+    "sponsored": "Promoted",
+    "openTarget": "View details",
+    "targetSkill": "Skill",
+    "targetBundle": "Bundle"
   },
   "adminUsers": {
     "title": "User Management",

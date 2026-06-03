@@ -334,7 +334,8 @@
     "viewReports": "查看技能举报",
     "previewMore": "...",
     "previewMoreLabel": "查看全部",
-    "userId": "用户 ID"
+    "userId": "用户 ID",
+    "promotionsTitle": "推广管理"
   },
   "mySkills": {
     "title": "我的技能",
@@ -551,6 +552,24 @@
     "reject": "拒绝",
     "empty": "暂无提升申请",
     "campaigns": {
+      "createTitle": "新建推广计划",
+      "createSubtitle": "将技能或技能包提交到指定推广位进行投放。",
+      "createAction": "新建计划",
+      "creating": "创建中...",
+      "formTargetType": "推广对象类型",
+      "formTargetId": "推广对象 ID",
+      "formVersionId": "版本 ID（可选）",
+      "formSlot": "推广位",
+      "formTitle": "计划标题",
+      "formSubtitle": "副标题",
+      "formPriority": "优先级",
+      "formStartsAt": "开始时间",
+      "formEndsAt": "结束时间",
+      "formCoverMediaId": "封面媒体 ID",
+      "formDemoMediaId": "演示媒体 ID",
+      "formReason": "申请原因",
+      "targetSkill": "技能",
+      "targetBundle": "技能包",
       "tabPendingReview": "待审核",
       "tabScheduled": "已排期",
       "tabActive": "生效中",
@@ -560,8 +579,20 @@
       "slot": "推广位",
       "priority": "优先级",
       "schedule": "投放时间",
-      "submittedBy": "提交人"
+      "submittedBy": "提交人",
+      "errors": {
+        "targetId": "请输入有效的推广对象 ID。",
+        "title": "请输入推广计划标题。",
+        "priority": "优先级必须在 0 到 100 之间。",
+        "timeWindow": "结束时间必须晚于开始时间。"
+      }
     }
+  },
+  "promotionSlots": {
+    "sponsored": "推广",
+    "openTarget": "查看详情",
+    "targetSkill": "技能",
+    "targetBundle": "技能包"
   },
   "adminUsers": {
     "title": "用户管理",

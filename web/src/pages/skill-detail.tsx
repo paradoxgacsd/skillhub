@@ -19,6 +19,7 @@ import { resolveSkillActionErrorTitle } from '@/features/skill/skill-action-erro
 import { isPrecheckConfirmationMessage, extractPrecheckWarnings } from '@/features/publish/publish-error-utils'
 import { clearDeletedSkillQueries, isDeleteSlugConfirmationValid, resolveDeletedSkillReturnTo } from '@/features/skill/skill-delete-flow'
 import { isSkillDetailQueriesEnabled } from './skill-detail-query'
+import { PromotionSlotDisplay } from '@/features/promotion-campaign/promotion-slot-display'
 import { RatingInput } from '@/features/social/rating-input'
 import { StarButton } from '@/features/social/star-button'
 import { SubscribeButton } from '@/features/social/subscribe-button'
@@ -1005,6 +1006,12 @@ export function SkillDetailPage() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <PromotionSlotDisplay
+          slotCode="DETAIL_RELATED"
+          maxItems={2}
+          className="animate-fade-up"
+        />
       </div>
 
       {/* Sidebar */}

@@ -41,6 +41,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export type CampaignStatus = 'DRAFT' | 'PENDING_REVIEW' | 'SCHEDULED' | 'ACTIVE' | 'ENDED' | 'REJECTED'
+export type PromotionEventType = 'IMPRESSION' | 'CLICK' | 'DOWNLOAD' | 'INSTALL'
 
 export type PromotionCampaign = {
   id: number
@@ -112,6 +113,6 @@ export const promotionCampaignApi = {
       method: 'POST',
       body: JSON.stringify({ comment: comment ?? null }),
     }),
-  recordEvent: (id: number, eventType: 'IMPRESSION' | 'CLICK' | 'DOWNLOAD' | 'INSTALL'): Promise<void> =>
+  recordEvent: (id: number, eventType: PromotionEventType): Promise<void> =>
     request(`/api/v1/promotion-slots/campaigns/${id}/events/${eventType}`, { method: 'POST' }),
 }

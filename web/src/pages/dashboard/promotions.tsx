@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useApprovePromotionCampaign,
+  useCreatePromotionCampaign,
   usePromotionCampaigns,
   useRejectPromotionCampaign,
 } from '@/features/promotion-campaign/hooks'
-import type { CampaignStatus } from '@/features/promotion-campaign/api'
+import type { CampaignStatus, CreateCampaignPayload } from '@/features/promotion-campaign/api'
 import { useApprovePromotion, usePromotionList, useRejectPromotion } from '@/features/promotion/use-promotion-list'
 import { formatLocalDateTime } from '@/shared/lib/date-time'
 import { Button } from '@/shared/ui/button'
@@ -23,7 +24,271 @@ const CAMPAIGN_STATUSES: Array<{ value: CampaignStatus; labelKey: string }> = [
   { value: 'REJECTED', labelKey: 'promotions.campaigns.tabRejected' },
 ]
 
+const PROMOTION_SLOT_CODES = [
+  'HOME_HERO',
+  'HOME_FEATURED_SKILLS',
+  'HOME_FEATURED_BUNDLES',
+  'SEARCH_PINNED',
+  'CATEGORY_FEATURED',
+  'DETAIL_RELATED',
+  'CLI_RECOMMENDED',
+] as const
+
 type PromotionRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
+type CampaignFormState = {
+  targetType: CreateCampaignPayload['targetType']
+  targetId: string
+  targetVersionId: string
+  slotCode: string
+  title: string
+  subtitle: string
+  coverMediaId: string
+  demoMediaId: string
+  priority: string
+  startsAt: string
+  endsAt: string
+  reason: string
+}
+
+function toLocalDateTimeInputValue(date: Date) {
+  const offset = date.getTimezoneOffset() * 60_000
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16)
+}
+
+function createDefaultCampaignForm(): CampaignFormState {
+  const now = new Date()
+  const startsAt = new Date(now.getTime() + 60 * 60 * 1000)
+  const endsAt = new Date(startsAt.getTime() + 7 * 24 * 60 * 60 * 1000)
+  return {
+    targetType: 'SKILL',
+    targetId: '',
+    targetVersionId: '',
+    slotCode: 'HOME_HERO',
+    title: '',
+    subtitle: '',
+    coverMediaId: '',
+    demoMediaId: '',
+    priority: '50',
+    startsAt: toLocalDateTimeInputValue(startsAt),
+    endsAt: toLocalDateTimeInputValue(endsAt),
+    reason: '',
+  }
+}
+
+function optionalNumber(value: string) {
+  const trimmed = value.trim()
+  return trimmed ? Number(trimmed) : null
+}
+
+function optionalString(value: string) {
+  const trimmed = value.trim()
+  return trimmed ? trimmed : null
+}
+
+function PromotionCampaignCreateForm() {
+  const { t } = useTranslation()
+  const createMutation = useCreatePromotionCampaign()
+  const [form, setForm] = useState<CampaignFormState>(() => createDefaultCampaignForm())
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const updateField = <K extends keyof CampaignFormState>(field: K, value: CampaignFormState[K]) => {
+    setForm((current) => ({ ...current, [field]: value }))
+  }
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setFormError(null)
+
+    const targetId = Number(form.targetId)
+    const priority = Number(form.priority)
+    const startsAt = new Date(form.startsAt)
+    const endsAt = new Date(form.endsAt)
+
+    if (!Number.isFinite(targetId) || targetId <= 0) {
+      setFormError(t('promotions.campaigns.errors.targetId'))
+      return
+    }
+    if (!form.title.trim()) {
+      setFormError(t('promotions.campaigns.errors.title'))
+      return
+    }
+    if (!Number.isFinite(priority) || priority < 0 || priority > 100) {
+      setFormError(t('promotions.campaigns.errors.priority'))
+      return
+    }
+    if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime()) || !endsAt.getTime() || endsAt <= startsAt) {
+      setFormError(t('promotions.campaigns.errors.timeWindow'))
+      return
+    }
+
+    const payload: CreateCampaignPayload = {
+      targetType: form.targetType,
+      targetId,
+      targetVersionId: optionalNumber(form.targetVersionId),
+      slotCode: form.slotCode,
+      title: form.title.trim(),
+      subtitle: optionalString(form.subtitle),
+      coverMediaId: optionalNumber(form.coverMediaId),
+      demoMediaId: optionalNumber(form.demoMediaId),
+      priority,
+      startsAt: startsAt.toISOString(),
+      endsAt: endsAt.toISOString(),
+      reason: optionalString(form.reason),
+    }
+
+    createMutation.mutate(payload, {
+      onSuccess: () => setForm(createDefaultCampaignForm()),
+    })
+  }
+
+  return (
+    <Card className="space-y-5 p-5">
+      <div>
+        <h2 className="font-heading text-lg font-semibold">{t('promotions.campaigns.createTitle')}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{t('promotions.campaigns.createSubtitle')}</p>
+      </div>
+      <form className="space-y-5" onSubmit={handleSubmit}>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formTargetType')}</span>
+            <select
+              className="flex h-11 w-full rounded-lg border bg-white px-4 py-2 text-sm"
+              value={form.targetType}
+              onChange={(event) => updateField('targetType', event.target.value as CampaignFormState['targetType'])}
+            >
+              <option value="SKILL">{t('promotions.campaigns.targetSkill')}</option>
+              <option value="SKILL_BUNDLE">{t('promotions.campaigns.targetBundle')}</option>
+            </select>
+          </label>
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formTargetId')}</span>
+            <Input
+              type="number"
+              min={1}
+              required
+              value={form.targetId}
+              onChange={(event) => updateField('targetId', event.target.value)}
+            />
+          </label>
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formVersionId')}</span>
+            <Input
+              type="number"
+              min={1}
+              value={form.targetVersionId}
+              onChange={(event) => updateField('targetVersionId', event.target.value)}
+            />
+          </label>
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formSlot')}</span>
+            <select
+              className="flex h-11 w-full rounded-lg border bg-white px-4 py-2 text-sm"
+              value={form.slotCode}
+              onChange={(event) => updateField('slotCode', event.target.value)}
+            >
+              {PROMOTION_SLOT_CODES.map((slotCode) => (
+                <option key={slotCode} value={slotCode}>
+                  {slotCode}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formTitle')}</span>
+            <Input
+              required
+              maxLength={128}
+              value={form.title}
+              onChange={(event) => updateField('title', event.target.value)}
+            />
+          </label>
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formSubtitle')}</span>
+            <Input
+              maxLength={512}
+              value={form.subtitle}
+              onChange={(event) => updateField('subtitle', event.target.value)}
+            />
+          </label>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formPriority')}</span>
+            <Input
+              type="number"
+              min={0}
+              max={100}
+              required
+              value={form.priority}
+              onChange={(event) => updateField('priority', event.target.value)}
+            />
+          </label>
+          <label className="space-y-2 text-sm font-medium lg:col-span-2">
+            <span>{t('promotions.campaigns.formStartsAt')}</span>
+            <Input
+              type="datetime-local"
+              required
+              value={form.startsAt}
+              onChange={(event) => updateField('startsAt', event.target.value)}
+            />
+          </label>
+          <label className="space-y-2 text-sm font-medium lg:col-span-2">
+            <span>{t('promotions.campaigns.formEndsAt')}</span>
+            <Input
+              type="datetime-local"
+              required
+              value={form.endsAt}
+              onChange={(event) => updateField('endsAt', event.target.value)}
+            />
+          </label>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formCoverMediaId')}</span>
+            <Input
+              type="number"
+              min={1}
+              value={form.coverMediaId}
+              onChange={(event) => updateField('coverMediaId', event.target.value)}
+            />
+          </label>
+          <label className="space-y-2 text-sm font-medium">
+            <span>{t('promotions.campaigns.formDemoMediaId')}</span>
+            <Input
+              type="number"
+              min={1}
+              value={form.demoMediaId}
+              onChange={(event) => updateField('demoMediaId', event.target.value)}
+            />
+          </label>
+        </div>
+
+        <label className="space-y-2 text-sm font-medium">
+          <span>{t('promotions.campaigns.formReason')}</span>
+          <Textarea
+            maxLength={1000}
+            value={form.reason}
+            onChange={(event) => updateField('reason', event.target.value)}
+          />
+        </label>
+
+        {formError ? <p className="text-sm text-destructive">{formError}</p> : null}
+        {createMutation.error ? <p className="text-sm text-destructive">{(createMutation.error as Error).message}</p> : null}
+
+        <div className="flex justify-end">
+          <Button type="submit" disabled={createMutation.isPending}>
+            {createMutation.isPending ? t('promotions.campaigns.creating') : t('promotions.campaigns.createAction')}
+          </Button>
+        </div>
+      </form>
+    </Card>
+  )
+}
 
 /**
  * Renders one promotion queue lane. Pending items expose moderation actions,
@@ -200,20 +465,23 @@ function PromotionCampaignTabs() {
   const { t } = useTranslation()
 
   return (
-    <Tabs defaultValue="PENDING_REVIEW">
-      <TabsList className="max-w-full flex-wrap">
+    <div className="space-y-6">
+      <PromotionCampaignCreateForm />
+      <Tabs defaultValue="PENDING_REVIEW">
+        <TabsList className="max-w-full flex-wrap">
+          {CAMPAIGN_STATUSES.map((status) => (
+            <TabsTrigger key={status.value} value={status.value}>
+              {t(status.labelKey)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
         {CAMPAIGN_STATUSES.map((status) => (
-          <TabsTrigger key={status.value} value={status.value}>
-            {t(status.labelKey)}
-          </TabsTrigger>
+          <TabsContent key={status.value} value={status.value} className="mt-6">
+            <PromotionCampaignSection status={status.value} />
+          </TabsContent>
         ))}
-      </TabsList>
-      {CAMPAIGN_STATUSES.map((status) => (
-        <TabsContent key={status.value} value={status.value} className="mt-6">
-          <PromotionCampaignSection status={status.value} />
-        </TabsContent>
-      ))}
-    </Tabs>
+      </Tabs>
+    </div>
   )
 }
 

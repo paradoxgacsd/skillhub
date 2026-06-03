@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Loader2 } from 'lucide-react'
 import type { SkillSummary } from '@/api/types'
 import { useAuth } from '@/features/auth/use-auth'
+import { PromotionSlotDisplay } from '@/features/promotion-campaign/promotion-slot-display'
 import { SearchBar } from '@/features/search/search-bar'
 import { SkillCard } from '@/features/skill/skill-card'
 import { SkeletonList } from '@/shared/components/skeleton-loader'
@@ -216,6 +217,8 @@ export function SearchPage() {
           onSearch={handleSearch}
         />
       </div>
+
+      <PromotionSlotDisplay slotCode="SEARCH_PINNED" maxItems={3} className="animate-fade-up" />
 
       {/* Sort And Filters */}
       <div className="space-y-4">

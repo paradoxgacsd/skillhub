@@ -87,6 +87,10 @@ vi.mock('@/features/skill/install-command', () => ({
   InstallCommand: () => <div>install</div>,
 }))
 
+vi.mock('@/features/promotion-campaign/promotion-slot-display', () => ({
+  PromotionSlotDisplay: () => null,
+}))
+
 vi.mock('@/features/social/rating-input', () => ({
   RatingInput: () => <div>__RATING_WIDGET__</div>,
 }))

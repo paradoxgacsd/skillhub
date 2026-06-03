@@ -25,6 +25,10 @@ vi.mock('@/features/skill/skill-card', () => ({
   SkillCard: () => null,
 }))
 
+vi.mock('@/features/promotion-campaign/promotion-slot-display', () => ({
+  PromotionSlotDisplay: () => null,
+}))
+
 vi.mock('@/shared/components/skeleton-loader', () => ({
   SkeletonList: () => null,
 }))

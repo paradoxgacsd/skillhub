@@ -19,6 +19,7 @@ vi.mock('@/features/promotion/use-promotion-list', () => ({
 
 vi.mock('@/features/promotion-campaign/hooks', () => ({
   useApprovePromotionCampaign: () => ({ mutate: vi.fn(), isPending: false }),
+  useCreatePromotionCampaign: () => ({ mutate: vi.fn(), isPending: false, error: null }),
   usePromotionCampaigns: () => ({ data: { items: [] }, isLoading: false, error: null }),
   useRejectPromotionCampaign: () => ({ mutate: vi.fn(), isPending: false }),
 }))

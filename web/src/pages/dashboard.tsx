@@ -23,6 +23,8 @@ export function DashboardPage() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const governanceVisible = canViewGovernanceCenter(user?.platformRoles)
+  const promotionManagementVisible = user?.platformRoles?.includes('SKILL_ADMIN')
+    || user?.platformRoles?.includes('SUPER_ADMIN')
   const { data: skillPage, isLoading: isLoadingSkills } = useMySkills({ page: 0, size: skillPreviewPageSize })
   const skillPreview = limitPreviewItems<SkillSummary>(skillPage?.items ?? [], DASHBOARD_PREVIEW_LIMIT)
 
@@ -107,6 +109,14 @@ export function DashboardPage() {
             <div className="text-sm text-muted-foreground">{t('dashboard.governanceTitle')}</div>
             <Link to="/dashboard/governance" className="mt-2 inline-block font-semibold text-primary hover:underline">
               {t('dashboard.viewGovernance')}
+            </Link>
+          </Card>
+        ) : null}
+        {promotionManagementVisible ? (
+          <Card className="p-5">
+            <div className="text-sm text-muted-foreground">{t('dashboard.promotionsTitle')}</div>
+            <Link to="/dashboard/promotions" className="mt-2 inline-block font-semibold text-primary hover:underline">
+              {t('dashboard.viewPromotions')}
             </Link>
           </Card>
         ) : null}

@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { SearchBar } from '@/features/search/search-bar'
 import { SkillCard } from '@/features/skill/skill-card'
+import { PromotionSlotDisplay } from '@/features/promotion-campaign/promotion-slot-display'
 import { SkeletonList } from '@/shared/components/skeleton-loader'
 import { QuickStartSection } from '@/shared/components/quick-start'
 import { useSearchSkills } from '@/shared/hooks/use-skill-queries'
@@ -66,6 +67,19 @@ export function HomePage() {
           </button>
         </div>
       </div>
+
+      <PromotionSlotDisplay
+        slotCode="HOME_HERO"
+        variant="hero"
+        maxItems={2}
+        className="animate-fade-up"
+      />
+
+      <PromotionSlotDisplay
+        slotCode="HOME_FEATURED_SKILLS"
+        maxItems={3}
+        className="animate-fade-up"
+      />
 
       {/* Popular Downloads Section */}
       <section className="space-y-6 animate-fade-up">
