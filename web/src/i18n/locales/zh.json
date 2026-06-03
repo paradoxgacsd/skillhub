@@ -539,15 +539,29 @@
     "empty": "您还没有订阅任何技能。"
   },
   "promotions": {
-    "title": "提升审核",
-    "subtitle": "审核团队技能提升到全局空间的申请",
+    "title": "推广管理",
+    "subtitle": "管理运营推广位投放计划和命名空间提升审核。",
+    "tabCampaigns": "推广计划",
+    "tabRequests": "提升审核",
     "tabPending": "待审核",
     "tabApproved": "已通过",
     "tabRejected": "已拒绝",
     "commentPlaceholder": "审核意见（可选）",
     "approve": "通过",
     "reject": "拒绝",
-    "empty": "暂无提升申请"
+    "empty": "暂无提升申请",
+    "campaigns": {
+      "tabPendingReview": "待审核",
+      "tabScheduled": "已排期",
+      "tabActive": "生效中",
+      "tabEnded": "已结束",
+      "tabRejected": "已拒绝",
+      "empty": "暂无推广计划",
+      "slot": "推广位",
+      "priority": "优先级",
+      "schedule": "投放时间",
+      "submittedBy": "提交人"
+    }
   },
   "adminUsers": {
     "title": "用户管理",

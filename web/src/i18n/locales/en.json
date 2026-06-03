@@ -539,15 +539,29 @@
     "empty": "You haven't subscribed to any skills yet."
   },
   "promotions": {
-    "title": "Promotion Review",
-    "subtitle": "Review team skill promotion requests to global namespace",
+    "title": "Promotion Management",
+    "subtitle": "Manage promotion slot campaigns and namespace promotion requests.",
+    "tabCampaigns": "Promotion campaigns",
+    "tabRequests": "Namespace promotion review",
     "tabPending": "Pending",
     "tabApproved": "Approved",
     "tabRejected": "Rejected",
     "commentPlaceholder": "Review comment (optional)",
     "approve": "Approve",
     "reject": "Reject",
-    "empty": "No promotion requests"
+    "empty": "No promotion requests",
+    "campaigns": {
+      "tabPendingReview": "Pending review",
+      "tabScheduled": "Scheduled",
+      "tabActive": "Active",
+      "tabEnded": "Ended",
+      "tabRejected": "Rejected",
+      "empty": "No promotion campaigns",
+      "slot": "Slot",
+      "priority": "Priority",
+      "schedule": "Schedule",
+      "submittedBy": "Submitted by"
+    }
   },
   "adminUsers": {
     "title": "User Management",

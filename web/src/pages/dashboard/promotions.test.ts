@@ -17,6 +17,12 @@ vi.mock('@/features/promotion/use-promotion-list', () => ({
   useRejectPromotion: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 
+vi.mock('@/features/promotion-campaign/hooks', () => ({
+  useApprovePromotionCampaign: () => ({ mutate: vi.fn(), isPending: false }),
+  usePromotionCampaigns: () => ({ data: { items: [] }, isLoading: false, error: null }),
+  useRejectPromotionCampaign: () => ({ mutate: vi.fn(), isPending: false }),
+}))
+
 vi.mock('@/shared/lib/date-time', () => ({
   formatLocalDateTime: (v: string) => v,
 }))
@@ -31,6 +37,10 @@ vi.mock('@/shared/ui/card', () => ({
 
 vi.mock('@/shared/ui/input', () => ({
   Input: () => null,
+}))
+
+vi.mock('@/shared/ui/textarea', () => ({
+  Textarea: () => null,
 }))
 
 vi.mock('@/shared/ui/tabs', () => ({
