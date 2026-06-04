@@ -52,6 +52,10 @@ vi.mock('@/shared/hooks/use-skill-queries', () => ({
   usePublishSkill: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 
+vi.mock('@/shared/hooks/use-label-queries', () => ({
+  useVisibleLabels: () => ({ data: [], isLoading: false }),
+}))
+
 vi.mock('@/shared/hooks/use-namespace-queries', () => ({
   useMyNamespaces: () => ({ data: [], isLoading: false }),
 }))

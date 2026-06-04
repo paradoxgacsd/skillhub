@@ -18,6 +18,12 @@
       "exploreSkills": "探索技能",
       "publishSkill": "发布技能"
     },
+    "category": {
+      "all": "全部",
+      "downloads": "热门",
+      "newest": "最新",
+      "stars": "精选"
+    },
     "features": {
       "secure": {
         "title": "安全私密",
@@ -103,12 +109,7 @@
       "tip": "💡 提示：访问技能详情页可获取带环境变量的一键复制安装命令",
       "tabs": {
         "agent": "我是 Agent",
-        "human": "我是 Human",
-        "cli": "CLI"
-      },
-      "cli": {
-        "description": "安装 SkillHub CLI 到本地，后续可运行 skillhub install 安装技能",
-        "command": "npm i -g @astron-team/skillhub"
+        "human": "我是 Human"
       },
       "agent": {
         "description": "发送提示词给你的 Agent，以设置SkillHub Registry",
@@ -553,9 +554,14 @@
     "empty": "暂无提升申请",
     "campaigns": {
       "createTitle": "新建推广计划",
-      "createSubtitle": "将技能或技能包提交到指定推广位进行投放。",
-      "createAction": "新建计划",
+      "createSubtitle": "选择一个已公开发布的技能，并设置它要出现的推广位置。",
+      "createAction": "新建推广计划",
       "creating": "创建中...",
+      "formSkillSearch": "搜索技能",
+      "skillSearchPlaceholder": "输入技能名称、命名空间或 slug",
+      "formSkill": "推广技能",
+      "selectSkill": "选择一个已发布技能",
+      "noPromotableSkills": "没有找到可推广的公开已发布技能。",
       "formTargetType": "推广对象类型",
       "formTargetId": "推广对象 ID",
       "formVersionId": "版本 ID（可选）",
@@ -580,7 +586,14 @@
       "priority": "优先级",
       "schedule": "投放时间",
       "submittedBy": "提交人",
+      "slots": {
+        "HOME_HERO": "首页顶部推广",
+        "HOME_FEATURED_SKILLS": "首页精选技能",
+        "SEARCH_PINNED": "搜索页置顶",
+        "DETAIL_RELATED": "详情页相关推荐"
+      },
       "errors": {
+        "skillRequired": "请选择要推广的技能。",
         "targetId": "请输入有效的推广对象 ID。",
         "title": "请输入推广计划标题。",
         "priority": "优先级必须在 0 到 100 之间。",
@@ -1371,6 +1384,10 @@
       "loggedInUsersOnly": "仅登录用户可见",
       "private": "私有"
     },
+    "labels": "技能标签",
+    "labelsDescription": "选择发布后要展示在技能卡片和搜索筛选里的标签。",
+    "labelsLoading": "标签加载中...",
+    "labelsEmpty": "暂无可选标签",
     "file": "技能包文件",
     "removeSelectedFile": "删除已选文件",
     "publishing": "发布中...",

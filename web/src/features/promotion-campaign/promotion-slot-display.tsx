@@ -46,7 +46,7 @@ function PromotionItemCard({
           <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
             {t('promotionSlots.sponsored')}
           </span>
-          <span className="text-xs text-muted-foreground">{targetLabel} #{item.targetId}</span>
+          <span className="text-xs text-muted-foreground">{targetLabel}</span>
         </div>
         <h3 className={isHero ? 'font-heading text-2xl font-semibold leading-tight' : 'font-heading text-lg font-semibold leading-tight'}>
           {item.title}

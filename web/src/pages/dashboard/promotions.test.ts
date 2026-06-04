@@ -24,6 +24,10 @@ vi.mock('@/features/promotion-campaign/hooks', () => ({
   useRejectPromotionCampaign: () => ({ mutate: vi.fn(), isPending: false }),
 }))
 
+vi.mock('@/shared/hooks/use-skill-queries', () => ({
+  useSearchSkills: () => ({ data: { items: [] }, isLoading: false }),
+}))
+
 vi.mock('@/shared/lib/date-time', () => ({
   formatLocalDateTime: (v: string) => v,
 }))

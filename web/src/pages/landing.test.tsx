@@ -33,6 +33,10 @@ vi.mock('@/features/skill/skill-card', () => ({
   SkillCard: () => null,
 }))
 
+vi.mock('@/features/promotion-campaign/promotion-slot-display', () => ({
+  PromotionSlotDisplay: () => null,
+}))
+
 vi.mock('@/shared/components/skeleton-loader', () => ({
   SkeletonList: () => null,
 }))
@@ -42,6 +46,10 @@ vi.mock('@/shared/hooks/use-skill-queries', () => ({
     data: { items: [] },
     isLoading: false,
   }),
+}))
+
+vi.mock('@/shared/hooks/use-label-queries', () => ({
+  useVisibleLabels: () => ({ data: [], isLoading: false }),
 }))
 
 vi.mock('@/shared/hooks/use-in-view', () => ({

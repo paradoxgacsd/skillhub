@@ -5,6 +5,7 @@ import { normalizeSearchQuery } from '@/shared/lib/search-query'
 import { Search as SearchIcon } from 'lucide-react'
 import { LandingQuickStartSection } from '@/shared/components/landing-quick-start'
 import { SkillCard } from '@/features/skill/skill-card'
+import { PromotionSlotDisplay } from '@/features/promotion-campaign/promotion-slot-display'
 import { SkeletonList } from '@/shared/components/skeleton-loader'
 import { useSearchSkills } from '@/shared/hooks/use-skill-queries'
 import { useVisibleLabels } from '@/shared/hooks/use-label-queries'
@@ -110,6 +111,18 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+
+      <PromotionSlotDisplay
+        slotCode="HOME_HERO"
+        variant="hero"
+        maxItems={2}
+        className="mx-auto max-w-7xl pb-4 animate-fade-up"
+      />
+      <PromotionSlotDisplay
+        slotCode="HOME_FEATURED_SKILLS"
+        maxItems={3}
+        className="mx-auto max-w-7xl pb-10 animate-fade-up"
+      />
 
       <section className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between gap-2 flex-nowrap min-w-0">

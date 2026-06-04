@@ -22,6 +22,7 @@ import {
 import { Label } from '@/shared/ui/label'
 import { Card } from '@/shared/ui/card'
 import { usePublishSkill } from '@/shared/hooks/use-skill-queries'
+import { useVisibleLabels } from '@/shared/hooks/use-label-queries'
 import { useMyNamespaces } from '@/shared/hooks/use-namespace-queries'
 import { ConfirmDialog } from '@/shared/components/confirm-dialog'
 import { DashboardPageHeader } from '@/shared/components/dashboard-page-header'
@@ -38,10 +39,12 @@ export function PublishPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [namespaceSlug, setNamespaceSlug] = useState<string>(prefill.namespace)
   const [visibility, setVisibility] = useState<string>(prefill.visibility)
+  const [selectedLabelSlugs, setSelectedLabelSlugs] = useState<string[]>([])
   const [warningDialogOpen, setWarningDialogOpen] = useState(false)
   const [precheckWarnings, setPrecheckWarnings] = useState<string[]>([])
 
   const { data: namespaces, isLoading: isLoadingNamespaces } = useMyNamespaces()
+  const { data: visibleLabels, isLoading: isLoadingLabels } = useVisibleLabels()
   const publishMutation = usePublishSkill()
   const selectedNamespace = namespaces?.find((ns) => ns.slug === namespaceSlug)
   const namespaceOnlyLabel = selectedNamespace?.type === 'GLOBAL'
@@ -65,6 +68,14 @@ export function PublishPage() {
     setWarningDialogOpen(false)
   }
 
+  const toggleLabel = (labelSlug: string) => {
+    setSelectedLabelSlugs((current) =>
+      current.includes(labelSlug)
+        ? current.filter((slug) => slug !== labelSlug)
+        : [...current, labelSlug],
+    )
+  }
+
   const publishSkill = async (confirmWarnings = false) => {
     if (!selectedFile || !namespaceSlug) {
       toast.error(t('publish.selectRequired'))
@@ -76,6 +87,7 @@ export function PublishPage() {
         namespace: namespaceSlug,
         file: selectedFile,
         visibility,
+        labels: selectedLabelSlugs,
         confirmWarnings,
       })
       setPrecheckWarnings([])
@@ -192,6 +204,39 @@ export function PublishPage() {
               <SelectItem value="PRIVATE">{t('publish.visibilityOptions.private')}</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <Label className="text-sm font-semibold font-heading">{t('publish.labels')}</Label>
+            <p className="mt-1 text-sm text-muted-foreground">{t('publish.labelsDescription')}</p>
+          </div>
+          {isLoadingLabels ? (
+            <div className="h-11 animate-shimmer rounded-lg" />
+          ) : visibleLabels && visibleLabels.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {visibleLabels.map((label) => {
+                const selected = selectedLabelSlugs.includes(label.slug)
+                return (
+                  <button
+                    key={label.slug}
+                    type="button"
+                    onClick={() => toggleLabel(label.slug)}
+                    className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
+                      selected
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'border-border bg-secondary/40 text-muted-foreground hover:text-foreground'
+                    }`}
+                    aria-pressed={selected}
+                  >
+                    {label.displayName}
+                  </button>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">{t('publish.labelsEmpty')}</p>
+          )}
         </div>
 
         <div className="space-y-3">

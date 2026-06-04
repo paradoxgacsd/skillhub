@@ -18,6 +18,12 @@
       "exploreSkills": "Explore Skills",
       "publishSkill": "Publish Skill"
     },
+    "category": {
+      "all": "All",
+      "downloads": "Popular",
+      "newest": "Newest",
+      "stars": "Featured"
+    },
     "features": {
       "secure": {
         "title": "Secure & Private",
@@ -103,12 +109,7 @@
       "tip": "💡 Tip: Visit the skill detail page for one-click install commands with environment variables",
       "tabs": {
         "agent": "I am Agent",
-        "human": "I am Human",
-        "cli": "CLI"
-      },
-      "cli": {
-        "description": "Install the SkillHub CLI locally to run skillhub install for skills.",
-        "command": "npm i -g @astron-team/skillhub"
+        "human": "I am Human"
       },
       "agent": {
         "description": "Send a prompt to your Agent to set up the SkillHub Registry",
@@ -553,9 +554,14 @@
     "empty": "No promotion requests",
     "campaigns": {
       "createTitle": "Create promotion campaign",
-      "createSubtitle": "Submit a skill or bundle for placement in a configured promotion slot.",
-      "createAction": "Create campaign",
+      "createSubtitle": "Choose a published public skill and where it should appear.",
+      "createAction": "Create promotion campaign",
       "creating": "Creating...",
+      "formSkillSearch": "Search skills",
+      "skillSearchPlaceholder": "Search by name, namespace, or slug",
+      "formSkill": "Promoted skill",
+      "selectSkill": "Select a published skill",
+      "noPromotableSkills": "No public published skills are available to promote.",
       "formTargetType": "Target type",
       "formTargetId": "Target ID",
       "formVersionId": "Version ID (optional)",
@@ -580,7 +586,14 @@
       "priority": "Priority",
       "schedule": "Schedule",
       "submittedBy": "Submitted by",
+      "slots": {
+        "HOME_HERO": "Homepage hero",
+        "HOME_FEATURED_SKILLS": "Homepage featured skills",
+        "SEARCH_PINNED": "Search pinned result",
+        "DETAIL_RELATED": "Skill detail related"
+      },
       "errors": {
+        "skillRequired": "Select the skill to promote.",
         "targetId": "Enter a valid target ID.",
         "title": "Enter a campaign title.",
         "priority": "Priority must be between 0 and 100.",
@@ -1370,6 +1383,10 @@
       "loggedInUsersOnly": "Logged-in Users Only",
       "private": "Private"
     },
+    "labels": "Skill labels",
+    "labelsDescription": "Choose labels shown on skill cards and search filters after publishing.",
+    "labelsLoading": "Loading labels...",
+    "labelsEmpty": "No labels available",
     "file": "Skill Package File",
     "removeSelectedFile": "Remove selected file",
     "publishing": "Publishing...",
