@@ -76,12 +76,17 @@ public class PromotionCampaignService {
     }
 
     public PromotionCampaign approveCampaign(Long id, String comment, String reviewer, Instant now) {
+        return approveCampaign(id, comment, reviewer, now, false);
+    }
+
+    public PromotionCampaign approveCampaign(Long id, String comment, String reviewer, Instant now,
+                                             boolean allowSelfReview) {
         PromotionCampaign campaign = campaignRepository.findById(id)
                 .orElseThrow(() -> new PromotionException("error.promotion.campaign.notFound"));
         if (campaign.getStatus() != PromotionCampaignStatus.PENDING_REVIEW) {
             throw new PromotionException("error.promotion.campaign.notPendingReview");
         }
-        if (campaign.getSubmittedBy().equals(reviewer)) {
+        if (!allowSelfReview && campaign.getSubmittedBy().equals(reviewer)) {
             throw new PromotionException("error.promotion.campaign.selfReview");
         }
         targetGuard.assertPromotable(campaign.getTargetType(), campaign.getTargetId(), campaign.getTargetVersionId());

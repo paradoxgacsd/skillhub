@@ -164,6 +164,21 @@ class PromotionCampaignServiceTest {
     }
 
     @Test
+    void approveCampaign_allowsSubmitterSelfReviewWhenCallerCanSelfReview() {
+        PromotionCampaign campaign = pendingCampaign("admin", now.plus(1, ChronoUnit.DAYS), now.plus(7, ChronoUnit.DAYS));
+        given(campaignRepository.findById(1L)).willReturn(Optional.of(campaign), Optional.of(campaign));
+        given(slotRepository.findBySlotCode("HOME_HERO")).willReturn(Optional.of(enabledSlot("HOME_HERO", 5)));
+        given(campaignRepository.findCapacityCandidates("HOME_HERO",
+                now.plus(1, ChronoUnit.DAYS), now.plus(7, ChronoUnit.DAYS))).willReturn(List.of());
+        given(campaignRepository.updateStatusWithVersion(eq(1L), eq(PromotionCampaignStatus.SCHEDULED),
+                eq("admin"), eq("ok"), eq(1))).willReturn(1);
+
+        service.approveCampaign(1L, "ok", "admin", now, true);
+
+        verify(campaignRepository).updateStatusWithVersion(1L, PromotionCampaignStatus.SCHEDULED, "admin", "ok", 1);
+    }
+
+    @Test
     void approveCampaign_throwsOnConcurrentUpdate() {
         PromotionCampaign campaign = pendingCampaign("alice", now.plus(1, ChronoUnit.DAYS), now.plus(7, ChronoUnit.DAYS));
         given(campaignRepository.findById(1L)).willReturn(Optional.of(campaign));

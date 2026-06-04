@@ -18,6 +18,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -96,11 +97,26 @@ class AdminPromotionCampaignControllerTest {
 
     @Test
     void approve_passesIdAndCommentToAppService() throws Exception {
-        given(appService.approve(eq(1L), anyString(), eq("admin-1")))
+        given(appService.approve(eq(1L), anyString(), eq("admin-1"), eq(true)))
                 .willReturn(sampleResponse(1L));
 
         mockMvc.perform(post("/api/v1/admin/promotion-campaigns/1/approve")
                         .requestAttr("userId", "admin-1")
+                        .requestAttr("platformRoles", Set.of("SKILL_ADMIN"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"comment\":\"ok\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0));
+    }
+
+    @Test
+    void approve_marksAuditorAsUnableToSelfReview() throws Exception {
+        given(appService.approve(eq(1L), anyString(), eq("auditor-1"), eq(false)))
+                .willReturn(sampleResponse(1L));
+
+        mockMvc.perform(post("/api/v1/admin/promotion-campaigns/1/approve")
+                        .requestAttr("userId", "auditor-1")
+                        .requestAttr("platformRoles", Set.of("AUDITOR"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"comment\":\"ok\"}"))
                 .andExpect(status().isOk())

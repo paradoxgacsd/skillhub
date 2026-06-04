@@ -1,13 +1,11 @@
 import { type MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  ArrowUpRight,
   Check,
   ChevronLeft,
   ChevronRight,
   Copy,
   Download,
-  Sparkles,
   Star,
 } from 'lucide-react'
 import type { PromotionSlotItem } from './api'
@@ -26,6 +24,29 @@ interface PromotionSlotDisplayProps {
   maxItems?: number
   className?: string
 }
+
+const PROMOTION_CARD_PALETTES = [
+  {
+    accent: 'bg-amber-300',
+    pinned: 'border-slate-950 bg-[linear-gradient(115deg,#0b1220_0%,#12372f_58%,#0f766e_100%)] text-white shadow-[0_18px_44px_-28px_rgba(15,23,42,0.95)] ring-1 ring-white/10 hover:shadow-[0_26px_58px_-30px_rgba(15,23,42,0.95)] hover:ring-amber-300/35',
+    light: 'border-emerald-200 bg-[linear-gradient(115deg,#ffffff_0%,#f0fdf4_58%,#ecfeff_100%)] text-slate-950 shadow-[0_14px_34px_-28px_rgba(15,118,110,0.55)] ring-1 ring-emerald-500/10 hover:border-emerald-300 hover:shadow-[0_22px_44px_-30px_rgba(15,118,110,0.65)] hover:ring-emerald-500/25',
+  },
+  {
+    accent: 'bg-sky-300',
+    pinned: 'border-slate-950 bg-[linear-gradient(115deg,#0f172a_0%,#1e3a8a_55%,#0e7490_100%)] text-white shadow-[0_18px_44px_-28px_rgba(15,23,42,0.95)] ring-1 ring-white/10 hover:shadow-[0_26px_58px_-30px_rgba(30,64,175,0.9)] hover:ring-sky-300/35',
+    light: 'border-sky-200 bg-[linear-gradient(115deg,#ffffff_0%,#eff6ff_58%,#ecfeff_100%)] text-slate-950 shadow-[0_14px_34px_-28px_rgba(2,132,199,0.55)] ring-1 ring-sky-500/10 hover:border-sky-300 hover:shadow-[0_22px_44px_-30px_rgba(2,132,199,0.65)] hover:ring-sky-500/25',
+  },
+  {
+    accent: 'bg-rose-300',
+    pinned: 'border-slate-950 bg-[linear-gradient(115deg,#111827_0%,#7f1d1d_54%,#be123c_100%)] text-white shadow-[0_18px_44px_-28px_rgba(15,23,42,0.95)] ring-1 ring-white/10 hover:shadow-[0_26px_58px_-30px_rgba(190,18,60,0.85)] hover:ring-rose-300/35',
+    light: 'border-rose-200 bg-[linear-gradient(115deg,#ffffff_0%,#fff1f2_58%,#fff7ed_100%)] text-slate-950 shadow-[0_14px_34px_-28px_rgba(225,29,72,0.5)] ring-1 ring-rose-500/10 hover:border-rose-300 hover:shadow-[0_22px_44px_-30px_rgba(225,29,72,0.6)] hover:ring-rose-500/25',
+  },
+  {
+    accent: 'bg-lime-300',
+    pinned: 'border-slate-950 bg-[linear-gradient(115deg,#0f172a_0%,#365314_54%,#15803d_100%)] text-white shadow-[0_18px_44px_-28px_rgba(15,23,42,0.95)] ring-1 ring-white/10 hover:shadow-[0_26px_58px_-30px_rgba(21,128,61,0.85)] hover:ring-lime-300/35',
+    light: 'border-lime-200 bg-[linear-gradient(115deg,#ffffff_0%,#f7fee7_58%,#f0fdf4_100%)] text-slate-950 shadow-[0_14px_34px_-28px_rgba(77,124,15,0.5)] ring-1 ring-lime-500/10 hover:border-lime-300 hover:shadow-[0_22px_44px_-30px_rgba(77,124,15,0.6)] hover:ring-lime-500/25',
+  },
+] as const
 
 function PromotionItemCard({
   item,
@@ -53,14 +74,9 @@ function PromotionItemCard({
   const baseUrl = useMemo(() => getBaseUrl(), [])
   const isPinned = variant === 'pinned'
   const isHero = variant === 'hero'
-  const targetLabel = item.targetType === 'SKILL_BUNDLE'
-    ? t('promotionSlots.targetBundle')
-    : t('promotionSlots.targetSkill')
   const displayName = item.targetName || item.title
   const summary = item.targetSummary || item.subtitle
-  const namespaceLabel = item.targetNamespace && item.targetSlug
-    ? `@${item.targetNamespace}/${item.targetSlug}`
-    : targetLabel
+  const palette = PROMOTION_CARD_PALETTES[activeIndex % PROMOTION_CARD_PALETTES.length]
   const installCommand = useMemo(() => {
     if (item.targetType !== 'SKILL' || !item.targetNamespace || !item.targetSlug) {
       return null
@@ -89,66 +105,35 @@ function PromotionItemCard({
       : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:text-emerald-700 focus-visible:ring-emerald-500/60',
   )
   const metricClassName = cn(
-    'hidden items-center gap-1 text-xs font-semibold md:inline-flex',
+    'inline-flex items-center gap-1 text-[11px] font-semibold leading-none',
     isPinned ? 'text-emerald-50/85' : 'text-slate-500',
   )
 
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-lg border px-3 py-2.5 shadow-sm transition-colors',
+        'group relative overflow-hidden rounded-lg border px-3 py-2.5 transition-all duration-200',
+        item.targetUrl && 'cursor-pointer hover:-translate-y-0.5',
         hasMultiple && 'pb-4',
         isHero && 'md:px-4',
-        isPinned
-          ? 'border-slate-950 bg-[linear-gradient(115deg,#0b1220_0%,#12372f_58%,#0f766e_100%)] text-white shadow-[0_14px_36px_-26px_rgba(15,23,42,0.9)]'
-          : 'border-emerald-200 bg-white text-slate-950 ring-1 ring-emerald-500/10',
+        isPinned ? palette.pinned : palette.light,
       )}
     >
+      {item.targetUrl ? (
+        <a
+          href={item.targetUrl}
+          onClick={(event) => onClick(event, item)}
+          aria-label={displayName}
+          className="absolute inset-0 z-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/70 focus-visible:ring-offset-2"
+        />
+      ) : null}
       <span
-        className={cn(
-          'absolute inset-y-0 left-0 w-1',
-          isPinned ? 'bg-amber-300' : 'bg-emerald-500',
-        )}
+        className={cn('absolute inset-y-0 left-0 z-10 w-1 transition-all duration-200 group-hover:w-1.5', palette.accent)}
         aria-hidden="true"
       />
-      <div className="relative z-10 flex min-w-0 items-center gap-3 pl-1">
-        <div
-          className={cn(
-            'relative shrink-0 overflow-hidden rounded-md bg-gradient-to-br from-emerald-500 via-cyan-500 to-sky-600',
-            isHero ? 'h-12 w-12 md:h-14 md:w-14' : 'h-11 w-11',
-          )}
-        >
-          {item.coverUrl ? (
-            <img src={item.coverUrl} alt="" loading="lazy" className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-white">
-              <Sparkles className="h-5 w-5" strokeWidth={1.8} />
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-        </div>
-
+      <div className="pointer-events-none relative z-10 flex min-w-0 items-center gap-3 pl-2">
         <div className="min-w-0 flex-1">
-          <div className="mb-0.5 flex min-w-0 items-center gap-2">
-            <span
-              className={cn(
-                'inline-flex h-5 shrink-0 items-center gap-1 rounded-full px-2 text-[11px] font-semibold uppercase',
-                isPinned ? 'bg-amber-300 text-slate-950' : 'bg-emerald-600 text-white',
-              )}
-            >
-              <Sparkles className="h-3 w-3" />
-              {t('promotionSlots.sponsored')}
-            </span>
-            <span className={cn('truncate text-xs font-medium', isPinned ? 'text-emerald-50/85' : 'text-slate-500')}>
-              {namespaceLabel}
-            </span>
-            {item.targetVersion ? (
-              <span className={cn('hidden rounded-full px-1.5 py-0.5 text-[11px] font-medium sm:inline-flex', isPinned ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-600')}>
-                v{item.targetVersion}
-              </span>
-            ) : null}
-          </div>
-          <h3 className={cn('line-clamp-1 font-heading text-sm font-semibold leading-tight md:text-base', isPinned ? 'text-white' : 'text-slate-950')}>
+          <h3 className={cn('line-clamp-1 font-heading text-sm font-semibold leading-tight transition-colors md:text-base', isPinned ? 'text-white' : 'text-slate-950 group-hover:text-emerald-800')}>
             {displayName}
           </h3>
           {summary ? (
@@ -156,78 +141,68 @@ function PromotionItemCard({
               {summary}
             </p>
           ) : null}
-        </div>
-
-        <div className="hidden shrink-0 items-center gap-2 lg:flex">
-          {typeof item.downloadCount === 'number' ? (
-            <span className={metricClassName}>
-              <Download className="h-3.5 w-3.5" />
-              {formatCompactCount(item.downloadCount)}
-            </span>
-          ) : null}
-          {typeof item.starCount === 'number' ? (
-            <span className={metricClassName}>
-              <Star className="h-3.5 w-3.5" />
-              {formatCompactCount(item.starCount)}
+          {item.targetVersion ? (
+            <span className={cn('mt-1 inline-flex rounded-full px-1.5 py-0.5 text-[11px] font-medium', isPinned ? 'bg-white/10 text-white' : 'bg-white/75 text-slate-600')}>
+              v{item.targetVersion}
             </span>
           ) : null}
         </div>
 
-        <div className="flex shrink-0 items-center gap-1">
-          {hasMultiple ? (
-            <>
+        <div className="pointer-events-auto flex shrink-0 flex-col items-end gap-1.5">
+          <div className="flex items-center gap-1">
+            {hasMultiple ? (
+              <>
+                <button
+                  type="button"
+                  className={iconButtonClassName}
+                  title={t('promotionSlots.previous')}
+                  aria-label={t('promotionSlots.previous')}
+                  onClick={onPrevious}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  className={iconButtonClassName}
+                  title={t('promotionSlots.next')}
+                  aria-label={t('promotionSlots.next')}
+                  onClick={onNext}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </>
+            ) : null}
+            {installCommand ? (
               <button
                 type="button"
+                onClick={handleCopy}
+                title={installCommand}
+                aria-label={copied ? t('copyButton.copied') : t('copyButton.copy')}
                 className={iconButtonClassName}
-                title={t('promotionSlots.previous')}
-                aria-label={t('promotionSlots.previous')}
-                onClick={onPrevious}
               >
-                <ChevronLeft className="h-4 w-4" />
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </button>
-              <button
-                type="button"
-                className={iconButtonClassName}
-                title={t('promotionSlots.next')}
-                aria-label={t('promotionSlots.next')}
-                onClick={onNext}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </>
-          ) : null}
-          {item.targetUrl ? (
-            <a
-              href={item.targetUrl}
-              onClick={(event) => onClick(event, item)}
-              className={cn(
-                'inline-flex h-8 shrink-0 items-center gap-1 rounded-md px-2.5 text-xs font-semibold transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-                isPinned
-                  ? 'bg-white text-slate-950 hover:bg-emerald-50 focus-visible:ring-white/60 focus-visible:ring-offset-slate-950'
-                  : 'bg-slate-950 text-white hover:bg-emerald-700 focus-visible:ring-emerald-500/60',
-              )}
-            >
-              <span className="hidden md:inline">{t('promotionSlots.openTarget')}</span>
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </a>
-          ) : null}
-          {installCommand ? (
-            <button
-              type="button"
-              onClick={handleCopy}
-              title={installCommand}
-              aria-label={copied ? t('copyButton.copied') : t('copyButton.copy')}
-              className={iconButtonClassName}
-            >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            </button>
-          ) : null}
+            ) : null}
+          </div>
+          <div className="flex min-h-3.5 items-center justify-end gap-2">
+            {typeof item.downloadCount === 'number' ? (
+              <span className={metricClassName}>
+                <Download className="h-3 w-3" />
+                {formatCompactCount(item.downloadCount)}
+              </span>
+            ) : null}
+            {typeof item.starCount === 'number' ? (
+              <span className={metricClassName}>
+                <Star className="h-3 w-3" />
+                {formatCompactCount(item.starCount)}
+              </span>
+            ) : null}
+          </div>
         </div>
       </div>
 
       {hasMultiple ? (
-        <div className="absolute bottom-1.5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1">
+        <div className="pointer-events-auto absolute bottom-1.5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1">
           {Array.from({ length: totalItems }, (_, index) => (
             <button
               key={index}

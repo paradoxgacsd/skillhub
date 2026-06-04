@@ -73,6 +73,12 @@ public class PromotionCampaignAppService {
     }
 
     @Transactional
+    public PromotionCampaignResponse approve(Long id, String comment, String reviewer, boolean allowSelfReview) {
+        return PromotionCampaignResponse.from(domainService.approveCampaign(
+                id, comment, reviewer, clock.instant(), allowSelfReview));
+    }
+
+    @Transactional
     public PromotionCampaignResponse reject(Long id, String comment, String reviewer) {
         return PromotionCampaignResponse.from(domainService.rejectCampaign(id, comment, reviewer));
     }
