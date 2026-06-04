@@ -37,6 +37,13 @@ describe('PromotionSlotDisplay', () => {
           targetId: 42,
           title: 'Launch assistant',
           subtitle: 'A promoted skill',
+          targetNamespace: 'global',
+          targetSlug: 'launch-assistant',
+          targetName: 'Launch Assistant Skill',
+          targetSummary: 'Automates launch planning',
+          targetVersion: '1.2.0',
+          downloadCount: 128,
+          starCount: 9,
           targetUrl: '/space/global/launch-assistant',
         },
       ],
@@ -48,7 +55,9 @@ describe('PromotionSlotDisplay', () => {
   it('renders slot items and records impression and click events', async () => {
     render(<PromotionSlotDisplay slotCode="HOME_HERO" maxItems={1} />)
 
-    expect(screen.getByText('Launch assistant')).toBeTruthy()
+    expect(screen.getByText('Launch Assistant Skill')).toBeTruthy()
+    expect(screen.getByText('@global/launch-assistant')).toBeTruthy()
+    expect(screen.getByText('Automates launch planning')).toBeTruthy()
     await waitFor(() => {
       expect(recordPromotionEventMock).toHaveBeenCalledWith({ id: 7, eventType: 'IMPRESSION' })
     })

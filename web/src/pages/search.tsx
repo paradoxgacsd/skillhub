@@ -218,7 +218,7 @@ export function SearchPage() {
         />
       </div>
 
-      <PromotionSlotDisplay slotCode="SEARCH_PINNED" maxItems={3} className="animate-fade-up" />
+      <PromotionSlotDisplay slotCode="SEARCH_PINNED" variant="pinned" maxItems={2} className="animate-fade-up" />
 
       {/* Sort And Filters */}
       <div className="space-y-4">

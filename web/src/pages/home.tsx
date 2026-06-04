@@ -33,8 +33,15 @@ export function HomePage() {
 
   return (
     <div className="space-y-20">
+      <PromotionSlotDisplay
+        slotCode="HOME_HERO"
+        variant="pinned"
+        maxItems={1}
+        className="animate-fade-up"
+      />
+
       {/* Hero Section */}
-      <div className="text-center space-y-8 py-16 animate-fade-up">
+      <div className="text-center space-y-8 py-10 animate-fade-up">
         <div className="space-y-4">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-brand-gradient leading-tight">
             SkillHub
@@ -67,13 +74,6 @@ export function HomePage() {
           </button>
         </div>
       </div>
-
-      <PromotionSlotDisplay
-        slotCode="HOME_HERO"
-        variant="hero"
-        maxItems={2}
-        className="animate-fade-up"
-      />
 
       <PromotionSlotDisplay
         slotCode="HOME_FEATURED_SKILLS"

@@ -10,10 +10,13 @@ import com.iflytek.skillhub.domain.promotion.PromotionEventType;
 import com.iflytek.skillhub.domain.promotion.PromotionTargetType;
 import com.iflytek.skillhub.domain.skill.Skill;
 import com.iflytek.skillhub.domain.skill.SkillRepository;
+import com.iflytek.skillhub.domain.skill.SkillVersion;
+import com.iflytek.skillhub.domain.skill.SkillVersionRepository;
 import com.iflytek.skillhub.dto.PageResponse;
 import com.iflytek.skillhub.dto.promotion.CreatePromotionCampaignRequest;
 import com.iflytek.skillhub.dto.promotion.PromotionCampaignResponse;
 import com.iflytek.skillhub.dto.promotion.PromotionSlotItemResponse;
+import com.iflytek.skillhub.dto.promotion.PromotionSlotItemResponse.SkillPromotionTargetView;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,17 +36,20 @@ public class PromotionCampaignAppService {
     private final PromotionCampaignService domainService;
     private final PromotionCampaignRepository campaignRepository;
     private final SkillRepository skillRepository;
+    private final SkillVersionRepository skillVersionRepository;
     private final NamespaceRepository namespaceRepository;
     private final Clock clock;
 
     public PromotionCampaignAppService(PromotionCampaignService domainService,
                                        PromotionCampaignRepository campaignRepository,
                                        SkillRepository skillRepository,
+                                       SkillVersionRepository skillVersionRepository,
                                        NamespaceRepository namespaceRepository,
                                        Clock clock) {
         this.domainService = domainService;
         this.campaignRepository = campaignRepository;
         this.skillRepository = skillRepository;
+        this.skillVersionRepository = skillVersionRepository;
         this.namespaceRepository = namespaceRepository;
         this.clock = clock;
     }
@@ -74,7 +80,10 @@ public class PromotionCampaignAppService {
     @Transactional(readOnly = true)
     public List<PromotionSlotItemResponse> listSlotItems(String slotCode) {
         return domainService.listSlotItems(slotCode, clock.instant()).stream()
-                .map(c -> PromotionSlotItemResponse.from(c, resolveTargetUrl(c)))
+                .map(c -> {
+                    PromotionTargetView target = resolveTarget(c);
+                    return PromotionSlotItemResponse.from(c, target.url(), target.skill());
+                })
                 .toList();
     }
 
@@ -95,17 +104,44 @@ public class PromotionCampaignAppService {
         return domainService.runScheduledSweep(clock.instant());
     }
 
-    private String resolveTargetUrl(PromotionCampaign campaign) {
+    private PromotionTargetView resolveTarget(PromotionCampaign campaign) {
         if (campaign.getTargetType() == PromotionTargetType.SKILL_BUNDLE) {
-            return "/bundles/" + campaign.getTargetId();
+            return new PromotionTargetView("/bundles/" + campaign.getTargetId(), null);
         }
         Optional<Skill> skill = skillRepository.findById(campaign.getTargetId());
         if (skill.isEmpty()) {
-            return null;
+            return PromotionTargetView.empty();
         }
         Skill s = skill.get();
         Optional<Namespace> ns = namespaceRepository.findById(s.getNamespaceId());
         String namespaceSlug = ns.map(Namespace::getSlug).orElse("global");
-        return "/space/" + namespaceSlug + "/" + s.getSlug();
+        String version = resolveVersionLabel(campaign, s);
+        SkillPromotionTargetView target = new SkillPromotionTargetView(
+                namespaceSlug,
+                s.getSlug(),
+                s.getDisplayName() != null && !s.getDisplayName().isBlank() ? s.getDisplayName() : s.getSlug(),
+                s.getSummary(),
+                version,
+                s.getDownloadCount(),
+                s.getStarCount()
+        );
+        return new PromotionTargetView("/space/" + namespaceSlug + "/" + s.getSlug(), target);
+    }
+
+    private String resolveVersionLabel(PromotionCampaign campaign, Skill skill) {
+        Long versionId = campaign.getTargetVersionId() != null ? campaign.getTargetVersionId() : skill.getLatestVersionId();
+        if (versionId == null) {
+            return null;
+        }
+        return skillVersionRepository.findById(versionId)
+                .filter(version -> skill.getId().equals(version.getSkillId()))
+                .map(SkillVersion::getVersion)
+                .orElse(null);
+    }
+
+    private record PromotionTargetView(String url, SkillPromotionTargetView skill) {
+        static PromotionTargetView empty() {
+            return new PromotionTargetView(null, null);
+        }
     }
 }

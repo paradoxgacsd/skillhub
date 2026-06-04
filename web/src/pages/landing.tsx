@@ -48,7 +48,13 @@ export function LandingPage() {
   const quickLabels = useMemo(() => (visibleLabels ?? []).slice(0, 9), [visibleLabels])
 
   return (
-    <main className="relative z-10 px-4 pt-12 pb-20 md:px-8 lg:px-[60px] md:pt-20">
+    <main className="relative z-10 px-4 pt-4 pb-20 md:px-8 md:pt-6 lg:px-[60px]">
+      <PromotionSlotDisplay
+        slotCode="HOME_HERO"
+        variant="pinned"
+        maxItems={1}
+        className="mx-auto max-w-7xl pb-8 animate-fade-up"
+      />
       <section className="max-w-7xl mx-auto pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-stretch">
           <div className="flex flex-col">
@@ -113,15 +119,9 @@ export function LandingPage() {
       </section>
 
       <PromotionSlotDisplay
-        slotCode="HOME_HERO"
-        variant="hero"
-        maxItems={2}
-        className="mx-auto max-w-7xl pb-4 animate-fade-up"
-      />
-      <PromotionSlotDisplay
         slotCode="HOME_FEATURED_SKILLS"
         maxItems={3}
-        className="mx-auto max-w-7xl pb-10 animate-fade-up"
+        className="mx-auto max-w-7xl pb-8 animate-fade-up"
       />
 
       <section className="max-w-7xl mx-auto space-y-6">

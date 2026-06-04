@@ -45,13 +45,15 @@ class PromotionSlotControllerTest {
     void listSlotItems_returnsPublicSlotItems() throws Exception {
         given(appService.listSlotItems("HOME_HERO")).willReturn(List.of(
                 new PromotionSlotItemResponse(7L, "HOME_HERO", null, 1L,
-                        "Featured", "subtitle", null, null, "/space/global/demo")
+                        "Featured", "subtitle", null, null, "/space/global/demo",
+                        "global", "demo", "Demo Skill", "Skill summary", "1.0.0", 12L, 3)
         ));
 
         mockMvc.perform(get("/api/v1/promotion-slots/HOME_HERO"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.data[0].campaignId").value(7));
+                .andExpect(jsonPath("$.data[0].campaignId").value(7))
+                .andExpect(jsonPath("$.data[0].targetName").value("Demo Skill"));
     }
 
     @Test

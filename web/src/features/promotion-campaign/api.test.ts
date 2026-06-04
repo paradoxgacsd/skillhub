@@ -27,7 +27,20 @@ describe('promotionCampaignApi', () => {
         JSON.stringify({
           code: 0,
           msg: 'ok',
-          data: [{ campaignId: 1, slotCode: 'HOME_HERO', targetType: 'SKILL', targetId: 7, title: 'T' }],
+          data: [{
+            campaignId: 1,
+            slotCode: 'HOME_HERO',
+            targetType: 'SKILL',
+            targetId: 7,
+            title: 'T',
+            targetName: 'Promoted Skill',
+            targetNamespace: 'global',
+            targetSlug: 'promoted-skill',
+            targetSummary: 'A practical promoted skill',
+            targetVersion: '1.0.0',
+            downloadCount: 42,
+            starCount: 5,
+          }],
           timestamp: 'now',
           requestId: 'r1',
         }),
@@ -39,7 +52,20 @@ describe('promotionCampaignApi', () => {
     const items = await promotionCampaignApi.listSlotItems('HOME_HERO')
 
     expect(items).toEqual([
-      { campaignId: 1, slotCode: 'HOME_HERO', targetType: 'SKILL', targetId: 7, title: 'T' },
+      {
+        campaignId: 1,
+        slotCode: 'HOME_HERO',
+        targetType: 'SKILL',
+        targetId: 7,
+        title: 'T',
+        targetName: 'Promoted Skill',
+        targetNamespace: 'global',
+        targetSlug: 'promoted-skill',
+        targetSummary: 'A practical promoted skill',
+        targetVersion: '1.0.0',
+        downloadCount: 42,
+        starCount: 5,
+      },
     ])
     const [url] = mockFetch.mock.calls[0]
     expect(String(url)).toContain('/api/v1/promotion-slots/HOME_HERO')

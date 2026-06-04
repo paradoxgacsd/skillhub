@@ -75,6 +75,13 @@ export type PromotionSlotItem = {
   coverUrl?: string | null
   demoGifUrl?: string | null
   targetUrl?: string | null
+  targetNamespace?: string | null
+  targetSlug?: string | null
+  targetName?: string | null
+  targetSummary?: string | null
+  targetVersion?: string | null
+  downloadCount?: number | null
+  starCount?: number | null
 }
 
 export type CreateCampaignPayload = {
