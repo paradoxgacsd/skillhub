@@ -77,6 +77,11 @@ public class PromotionCampaignAppService {
         return PromotionCampaignResponse.from(domainService.rejectCampaign(id, comment, reviewer));
     }
 
+    @Transactional
+    public PromotionCampaignResponse end(Long id, String comment, String operator) {
+        return PromotionCampaignResponse.from(domainService.endCampaign(id, comment, operator));
+    }
+
     @Transactional(readOnly = true)
     public List<PromotionSlotItemResponse> listSlotItems(String slotCode) {
         return domainService.listSlotItems(slotCode, clock.instant()).stream()

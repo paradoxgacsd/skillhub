@@ -41,6 +41,18 @@ export function useRejectPromotionCampaign() {
   })
 }
 
+export function useEndPromotionCampaign() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, comment }: { id: number; comment?: string }) =>
+      promotionCampaignApi.end(id, comment),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: PROMOTION_CAMPAIGN_KEY })
+      qc.invalidateQueries({ queryKey: ['promotion-slots'] })
+    },
+  })
+}
+
 export function useRecordPromotionEvent() {
   return useMutation({
     mutationFn: ({ id, eventType }: { id: number; eventType: PromotionEventType }) =>

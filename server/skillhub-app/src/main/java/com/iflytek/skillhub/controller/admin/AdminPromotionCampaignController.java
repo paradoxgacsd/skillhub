@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Admin endpoints for operational promotion campaigns: create, approve, reject and list.
+ * Admin endpoints for operational promotion campaigns: create, approve, reject, end and list.
  */
 @RestController
 @RequestMapping("/api/v1/admin/promotion-campaigns")
@@ -56,6 +56,14 @@ public class AdminPromotionCampaignController extends BaseApiController {
                                                          @RequestAttribute("userId") String userId) {
         String comment = body == null ? null : body.comment();
         return ok("response.success.updated", appService.reject(id, comment, userId));
+    }
+
+    @PostMapping("/{id}/end")
+    public ApiResponse<PromotionCampaignResponse> end(@PathVariable Long id,
+                                                      @RequestBody(required = false) PromotionCampaignReviewRequest body,
+                                                      @RequestAttribute("userId") String userId) {
+        String comment = body == null ? null : body.comment();
+        return ok("response.success.updated", appService.end(id, comment, userId));
     }
 
     @GetMapping

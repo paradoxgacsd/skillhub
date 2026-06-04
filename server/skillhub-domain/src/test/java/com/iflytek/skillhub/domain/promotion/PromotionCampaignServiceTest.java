@@ -190,6 +190,31 @@ class PromotionCampaignServiceTest {
     }
 
     @Test
+    void endCampaign_movesScheduledToEnded() {
+        PromotionCampaign campaign = campaign(1L, PromotionCampaignStatus.SCHEDULED, "alice",
+                now.plus(1, ChronoUnit.DAYS), now.plus(7, ChronoUnit.DAYS));
+        given(campaignRepository.findById(1L)).willReturn(Optional.of(campaign), Optional.of(campaign));
+        given(campaignRepository.updateStatusWithVersion(eq(1L), eq(PromotionCampaignStatus.ENDED),
+                eq("admin"), eq("take down"), eq(1))).willReturn(1);
+
+        service.endCampaign(1L, "take down", "admin");
+
+        verify(campaignRepository).updateStatusWithVersion(1L, PromotionCampaignStatus.ENDED, "admin", "take down", 1);
+    }
+
+    @Test
+    void endCampaign_rejectsPendingReviewCampaign() {
+        PromotionCampaign campaign = pendingCampaign("alice", now.plus(1, ChronoUnit.DAYS), now.plus(7, ChronoUnit.DAYS));
+        given(campaignRepository.findById(1L)).willReturn(Optional.of(campaign));
+
+        assertThatThrownBy(() -> service.endCampaign(1L, "take down", "admin"))
+                .isInstanceOf(PromotionException.class)
+                .hasMessage("error.promotion.campaign.notTerminable");
+
+        verify(campaignRepository, never()).updateStatusWithVersion(anyLong(), any(), anyString(), any(), anyInt());
+    }
+
+    @Test
     void recordEvent_persistsLog() {
         given(campaignRepository.findById(7L)).willReturn(Optional.of(pendingCampaign("alice",
                 now.minus(1, ChronoUnit.HOURS), now.plus(1, ChronoUnit.HOURS))));

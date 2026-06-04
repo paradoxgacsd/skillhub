@@ -557,6 +557,10 @@
       "createSubtitle": "选择一个已公开发布的技能，并设置它要出现的推广位置。",
       "createAction": "新建推广计划",
       "creating": "创建中...",
+      "cancelAction": "取消推广",
+      "takeDownAction": "下架推广",
+      "ending": "处理中...",
+      "endCommentPlaceholder": "取消或下架原因（可选）",
       "formSkillSearch": "搜索技能",
       "skillSearchPlaceholder": "输入技能名称、命名空间或 slug",
       "formSkill": "推广技能",
@@ -605,7 +609,10 @@
     "sponsored": "推广",
     "openTarget": "查看详情",
     "targetSkill": "技能",
-    "targetBundle": "技能包"
+    "targetBundle": "技能包",
+    "previous": "上一个推广",
+    "next": "下一个推广",
+    "goTo": "切换到第 {{index}} / {{total}} 个推广"
   },
   "adminUsers": {
     "title": "用户管理",

@@ -120,6 +120,11 @@ export const promotionCampaignApi = {
       method: 'POST',
       body: JSON.stringify({ comment: comment ?? null }),
     }),
+  end: (id: number, comment?: string | null): Promise<PromotionCampaign> =>
+    request(`/api/v1/admin/promotion-campaigns/${id}/end`, {
+      method: 'POST',
+      body: JSON.stringify({ comment: comment ?? null }),
+    }),
   recordEvent: (id: number, eventType: PromotionEventType): Promise<void> =>
     request(`/api/v1/promotion-slots/campaigns/${id}/events/${eventType}`, { method: 'POST' }),
 }

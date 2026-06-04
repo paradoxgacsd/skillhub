@@ -32,46 +32,48 @@ export function HomePage() {
   }
 
   return (
-    <div className="space-y-20">
-      <PromotionSlotDisplay
-        slotCode="HOME_HERO"
-        variant="pinned"
-        maxItems={1}
-        className="animate-fade-up"
-      />
+    <div className="space-y-14">
+      <div className="space-y-8">
+        <PromotionSlotDisplay
+          slotCode="HOME_HERO"
+          variant="pinned"
+          maxItems={5}
+          className="animate-fade-up"
+        />
 
-      {/* Hero Section */}
-      <div className="text-center space-y-8 py-10 animate-fade-up">
-        <div className="space-y-4">
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-brand-gradient leading-tight">
-            SkillHub
-          </h1>
-          <p className="text-xl md:text-2xl max-w-2xl mx-auto" style={{ color: 'hsl(var(--text-secondary))' }}>
-            {t('home.subtitle')}
-          </p>
-          <p className="text-base max-w-xl mx-auto" style={{ color: 'hsl(var(--muted-foreground))' }}>
-            {t('home.description')}
-          </p>
-        </div>
+        {/* Hero Section */}
+        <div className="text-center space-y-8 py-10 animate-fade-up">
+          <div className="space-y-4">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-brand-gradient leading-tight">
+              SkillHub
+            </h1>
+            <p className="text-xl md:text-2xl max-w-2xl mx-auto" style={{ color: 'hsl(var(--text-secondary))' }}>
+              {t('home.subtitle')}
+            </p>
+            <p className="text-base max-w-xl mx-auto" style={{ color: 'hsl(var(--muted-foreground))' }}>
+              {t('home.description')}
+            </p>
+          </div>
 
-        <div className="max-w-2xl mx-auto animate-fade-up delay-1">
-          <SearchBar onSearch={handleSearch} />
-        </div>
+          <div className="max-w-2xl mx-auto animate-fade-up delay-1">
+            <SearchBar onSearch={handleSearch} />
+          </div>
 
-        <div className="flex items-center justify-center gap-4 animate-fade-up delay-2">
-          <button
-            className="px-8 py-3.5 rounded-xl text-base font-medium text-white bg-brand-gradient shadow-sm hover:opacity-95 transition-opacity"
-            onClick={() => navigate({ to: '/search', search: { q: '', sort: 'relevance', page: 0, starredOnly: false } })}
-          >
-            {t('home.browseSkills')}
-          </button>
-          <button
-            className="px-8 py-3.5 rounded-xl text-base font-medium border transition-colors"
-            style={{ background: 'var(--bg-secondary-btn, #F7FAFC)', borderColor: 'hsl(var(--muted-foreground))', color: 'hsl(var(--muted-foreground))' }}
-            onClick={() => navigate({ to: '/dashboard/publish' })}
-          >
-            {t('home.publishSkill')}
-          </button>
+          <div className="flex items-center justify-center gap-4 animate-fade-up delay-2">
+            <button
+              className="px-8 py-3.5 rounded-xl text-base font-medium text-white bg-brand-gradient shadow-sm hover:opacity-95 transition-opacity"
+              onClick={() => navigate({ to: '/search', search: { q: '', sort: 'relevance', page: 0, starredOnly: false } })}
+            >
+              {t('home.browseSkills')}
+            </button>
+            <button
+              className="px-8 py-3.5 rounded-xl text-base font-medium border transition-colors"
+              style={{ background: 'var(--bg-secondary-btn, #F7FAFC)', borderColor: 'hsl(var(--muted-foreground))', color: 'hsl(var(--muted-foreground))' }}
+              onClick={() => navigate({ to: '/dashboard/publish' })}
+            >
+              {t('home.publishSkill')}
+            </button>
+          </div>
         </div>
       </div>
 

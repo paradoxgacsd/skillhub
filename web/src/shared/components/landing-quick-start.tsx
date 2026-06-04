@@ -69,6 +69,10 @@ export function LandingQuickStartSection({ compact = false }: { compact?: boolea
     defaultValue: t('landing.quickStart.agent.command'),
     url: `${baseUrl}/registry/skill.md`,
   })
+  const humanBaseCommand = t('landing.quickStart.human.command')
+  const humanCommand = humanBaseCommand.includes('--registry')
+    ? humanBaseCommand
+    : `${humanBaseCommand} --registry ${baseUrl}`
 
   const tabs: LandingQuickStartTab[] = [
     {
@@ -81,7 +85,7 @@ export function LandingQuickStartSection({ compact = false }: { compact?: boolea
       id: 'human',
       label: t('landing.quickStart.tabs.human'),
       description: t('landing.quickStart.human.description'),
-      command: t('landing.quickStart.human.command'),
+      command: humanCommand,
     },
   ]
 

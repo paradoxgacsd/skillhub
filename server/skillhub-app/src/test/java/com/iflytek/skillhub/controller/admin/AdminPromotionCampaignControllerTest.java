@@ -118,6 +118,19 @@ class AdminPromotionCampaignControllerTest {
                 .andExpect(jsonPath("$.code").value(0));
     }
 
+    @Test
+    void end_passesIdAndCommentToAppService() throws Exception {
+        given(appService.end(eq(1L), anyString(), eq("admin-1")))
+                .willReturn(sampleResponse(1L));
+
+        mockMvc.perform(post("/api/v1/admin/promotion-campaigns/1/end")
+                        .requestAttr("userId", "admin-1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"comment\":\"take down\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0));
+    }
+
     private PromotionCampaign sampleCampaign(Long id) {
         PromotionCampaign campaign = new PromotionCampaign(
                 PromotionTargetType.SKILL_BUNDLE, 88L, "HOME_HERO",

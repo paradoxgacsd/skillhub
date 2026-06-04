@@ -89,6 +89,23 @@ describe('promotionCampaignApi', () => {
     expect(headers.get('Content-Type')).toBe('application/json')
   })
 
+  it('end sends POST with comment in JSON body', async () => {
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ code: 0, msg: 'ok', data: { id: 1 }, timestamp: '', requestId: '' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    )
+    globalThis.fetch = mockFetch as unknown as typeof fetch
+
+    await promotionCampaignApi.end(1, 'take down')
+
+    const [url, init] = mockFetch.mock.calls[0]
+    expect(String(url)).toContain('/api/v1/admin/promotion-campaigns/1/end')
+    expect(init.method).toBe('POST')
+    expect(JSON.parse(init.body as string)).toEqual({ comment: 'take down' })
+  })
+
   it('throws when envelope code is non-zero', async () => {
     const mockFetch = vi.fn().mockResolvedValue(
       new Response(

@@ -110,6 +110,21 @@ public class PromotionCampaignService {
         return campaignRepository.findById(id).orElseThrow();
     }
 
+    public PromotionCampaign endCampaign(Long id, String comment, String operator) {
+        PromotionCampaign campaign = campaignRepository.findById(id)
+                .orElseThrow(() -> new PromotionException("error.promotion.campaign.notFound"));
+        if (campaign.getStatus() != PromotionCampaignStatus.SCHEDULED
+                && campaign.getStatus() != PromotionCampaignStatus.ACTIVE) {
+            throw new PromotionException("error.promotion.campaign.notTerminable");
+        }
+        int updated = campaignRepository.updateStatusWithVersion(
+                campaign.getId(), PromotionCampaignStatus.ENDED, operator, comment, campaign.getVersion());
+        if (updated == 0) {
+            throw new PromotionException("error.promotion.campaign.concurrentUpdate");
+        }
+        return campaignRepository.findById(id).orElseThrow();
+    }
+
     public List<PromotionCampaign> listSlotItems(String slotCode, Instant now) {
         if (slotRepository.findBySlotCode(slotCode).isEmpty()) {
             throw new PromotionException("error.promotion.slot.notFound");

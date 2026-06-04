@@ -218,8 +218,6 @@ export function SearchPage() {
         />
       </div>
 
-      <PromotionSlotDisplay slotCode="SEARCH_PINNED" variant="pinned" maxItems={2} className="animate-fade-up" />
-
       {/* Sort And Filters */}
       <div className="space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-4">
@@ -285,6 +283,8 @@ export function SearchPage() {
           ))}
         </div>
       </div>
+
+      <PromotionSlotDisplay slotCode="SEARCH_PINNED" variant="pinned" maxItems={4} className="animate-fade-up" />
 
       {/* Results */}
       {isPageLoading ? (

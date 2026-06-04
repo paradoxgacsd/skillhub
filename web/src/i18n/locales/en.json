@@ -557,6 +557,10 @@
       "createSubtitle": "Choose a published public skill and where it should appear.",
       "createAction": "Create promotion campaign",
       "creating": "Creating...",
+      "cancelAction": "Cancel campaign",
+      "takeDownAction": "Take down promotion",
+      "ending": "Updating...",
+      "endCommentPlaceholder": "Reason for cancellation or takedown (optional)",
       "formSkillSearch": "Search skills",
       "skillSearchPlaceholder": "Search by name, namespace, or slug",
       "formSkill": "Promoted skill",
@@ -605,7 +609,10 @@
     "sponsored": "Promoted",
     "openTarget": "View details",
     "targetSkill": "Skill",
-    "targetBundle": "Bundle"
+    "targetBundle": "Bundle",
+    "previous": "Previous promotion",
+    "next": "Next promotion",
+    "goTo": "Go to promotion {{index}} of {{total}}"
   },
   "adminUsers": {
     "title": "User Management",

@@ -52,8 +52,8 @@ export function LandingPage() {
       <PromotionSlotDisplay
         slotCode="HOME_HERO"
         variant="pinned"
-        maxItems={1}
-        className="mx-auto max-w-7xl pb-8 animate-fade-up"
+        maxItems={5}
+        className="mx-auto max-w-7xl pb-5 animate-fade-up"
       />
       <section className="max-w-7xl mx-auto pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-stretch">
@@ -121,7 +121,7 @@ export function LandingPage() {
       <PromotionSlotDisplay
         slotCode="HOME_FEATURED_SKILLS"
         maxItems={3}
-        className="mx-auto max-w-7xl pb-8 animate-fade-up"
+        className="mx-auto max-w-7xl pb-6 animate-fade-up"
       />
 
       <section className="max-w-7xl mx-auto space-y-6">

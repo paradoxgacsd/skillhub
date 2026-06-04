@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
   useApprovePromotionCampaign,
   useCreatePromotionCampaign,
+  useEndPromotionCampaign,
   usePromotionCampaigns,
   useRejectPromotionCampaign,
 } from '@/features/promotion-campaign/hooks'
@@ -396,6 +397,7 @@ function PromotionCampaignSection({ status }: { status: CampaignStatus }) {
   const { data, isLoading, error } = usePromotionCampaigns(status)
   const approveMutation = useApprovePromotionCampaign()
   const rejectMutation = useRejectPromotionCampaign()
+  const endMutation = useEndPromotionCampaign()
   const [commentById, setCommentById] = useState<Record<number, string>>({})
   const items = data?.items ?? []
 
@@ -464,6 +466,30 @@ function PromotionCampaignSection({ status }: { status: CampaignStatus }) {
                 >
                   {t('promotions.reject')}
                 </Button>
+              </div>
+            </div>
+          ) : campaign.status === 'SCHEDULED' || campaign.status === 'ACTIVE' ? (
+            <div className="space-y-3">
+              <Textarea
+                placeholder={t('promotions.campaigns.endCommentPlaceholder')}
+                value={commentById[campaign.id] ?? ''}
+                onChange={(event) => setCommentById((prev) => ({ ...prev, [campaign.id]: event.target.value }))}
+              />
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  variant="destructive"
+                  onClick={() => endMutation.mutate({ id: campaign.id, comment: commentById[campaign.id] })}
+                  disabled={endMutation.isPending}
+                >
+                  {endMutation.isPending
+                    ? t('promotions.campaigns.ending')
+                    : t(campaign.status === 'ACTIVE'
+                      ? 'promotions.campaigns.takeDownAction'
+                      : 'promotions.campaigns.cancelAction')}
+                </Button>
+                {campaign.reviewComment ? (
+                  <span className="text-sm text-muted-foreground">{campaign.reviewComment}</span>
+                ) : null}
               </div>
             </div>
           ) : campaign.reviewComment ? (

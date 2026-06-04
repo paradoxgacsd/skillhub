@@ -1006,16 +1006,17 @@ export function SkillDetailPage() {
             </Card>
           </TabsContent>
         </Tabs>
-
-        <PromotionSlotDisplay
-          slotCode="DETAIL_RELATED"
-          maxItems={2}
-          className="animate-fade-up"
-        />
       </div>
 
       {/* Sidebar */}
       <aside className="w-full lg:w-80 flex-shrink-0 space-y-5">
+        <PromotionSlotDisplay
+          slotCode="DETAIL_RELATED"
+          variant="pinned"
+          maxItems={4}
+          className="animate-fade-up"
+        />
+
         {/* File Tree Sidebar — collapsible, mirrors SecurityAuditSummary card pattern */}
         {files && files.length > 0 && (
           <Card className="p-5 space-y-3">
