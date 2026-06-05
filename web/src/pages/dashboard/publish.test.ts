@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const useSearchMock = vi.fn()
+const useMyNamespacesMock = vi.fn()
 const selectRecords: Array<{ value?: string }> = []
 
 vi.mock('@tanstack/react-router', () => ({
@@ -57,7 +58,7 @@ vi.mock('@/shared/hooks/use-label-queries', () => ({
 }))
 
 vi.mock('@/shared/hooks/use-namespace-queries', () => ({
-  useMyNamespaces: () => ({ data: [], isLoading: false }),
+  useMyNamespaces: () => useMyNamespacesMock(),
 }))
 
 vi.mock('@/shared/components/dashboard-page-header', () => ({
@@ -79,6 +80,26 @@ import { PublishPage } from './publish'
 describe('PublishPage', () => {
   beforeEach(() => {
     selectRecords.length = 0
+    useMyNamespacesMock.mockReturnValue({
+      data: [
+        {
+          id: 1,
+          slug: 'global',
+          displayName: 'Global',
+          description: '',
+          type: 'GLOBAL',
+          status: 'ACTIVE',
+          createdAt: '2026-01-01T00:00:00Z',
+          immutable: true,
+          canFreeze: false,
+          canUnfreeze: false,
+          canArchive: false,
+          canRestore: false,
+          canDelete: false,
+        },
+      ],
+      isLoading: false,
+    })
     useSearchMock.mockReturnValue({
       namespace: '  team-ai  ',
       visibility: 'private',
@@ -92,12 +113,12 @@ describe('PublishPage', () => {
     expect(selectRecords[1]?.value).toBe('PRIVATE')
   })
 
-  it('falls back to public visibility when search params are missing', () => {
+  it('defaults to Global namespace and public visibility when search params are missing', () => {
     useSearchMock.mockReturnValue({})
 
     renderToStaticMarkup(createElement(PublishPage))
 
-    expect(selectRecords[0]?.value).toBe('__select_namespace__')
+    expect(selectRecords[0]?.value).toBe('global')
     expect(selectRecords[1]?.value).toBe('PUBLIC')
   })
 

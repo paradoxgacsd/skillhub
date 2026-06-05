@@ -134,7 +134,7 @@ export function LandingPage() {
                   key={filter.key}
                   type="button"
                   onClick={() => setPrimaryFilter(filter.key)}
-                  className="hover-lift px-3 py-1.5 rounded-full text-xs sm:text-sm sm:px-4 sm:py-2 font-medium border whitespace-nowrap"
+                  className="label-tag px-3 py-1.5 rounded-full text-xs sm:text-sm sm:px-4 sm:py-2 font-medium border whitespace-nowrap"
                   style={{
                     background: active ? 'var(--brand-gradient)' : '#ffffff',
                     color: active ? '#ffffff' : 'hsl(var(--foreground))',

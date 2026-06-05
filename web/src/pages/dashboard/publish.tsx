@@ -28,22 +28,36 @@ import { ConfirmDialog } from '@/shared/components/confirm-dialog'
 import { DashboardPageHeader } from '@/shared/components/dashboard-page-header'
 import { toast } from '@/shared/lib/toast'
 import { ApiError } from '@/api/client'
+import type { ManagedNamespace } from '@/api/types'
 
 const EMPTY_NAMESPACE_VALUE = '__select_namespace__'
+
+export function resolveDefaultPublishNamespace(namespaces?: ManagedNamespace[]): string {
+  if (!namespaces || namespaces.length === 0) {
+    return ''
+  }
+
+  const globalNamespace = namespaces.find((namespace) => namespace.type === 'GLOBAL' && namespace.slug === 'global')
+    ?? namespaces.find((namespace) => namespace.type === 'GLOBAL')
+    ?? namespaces.find((namespace) => namespace.slug === 'global')
+
+  return globalNamespace?.slug ?? namespaces[0]?.slug ?? ''
+}
 
 export function PublishPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const search = useSearch({ from: '/dashboard/publish' })
   const prefill = normalizePublishPrefill(search)
+  const { data: namespaces, isLoading: isLoadingNamespaces } = useMyNamespaces()
+  const defaultNamespaceSlug = resolveDefaultPublishNamespace(namespaces)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [namespaceSlug, setNamespaceSlug] = useState<string>(prefill.namespace)
+  const [namespaceSlug, setNamespaceSlug] = useState<string>(prefill.namespace || defaultNamespaceSlug)
   const [visibility, setVisibility] = useState<string>(prefill.visibility)
   const [selectedLabelSlugs, setSelectedLabelSlugs] = useState<string[]>([])
   const [warningDialogOpen, setWarningDialogOpen] = useState(false)
   const [precheckWarnings, setPrecheckWarnings] = useState<string[]>([])
 
-  const { data: namespaces, isLoading: isLoadingNamespaces } = useMyNamespaces()
   const { data: visibleLabels, isLoading: isLoadingLabels } = useVisibleLabels()
   const publishMutation = usePublishSkill()
   const selectedNamespace = namespaces?.find((ns) => ns.slug === namespaceSlug)
@@ -52,9 +66,17 @@ export function PublishPage() {
     : t('publish.visibilityOptions.namespaceOnly')
 
   useEffect(() => {
-    setNamespaceSlug(prefill.namespace)
+    if (prefill.namespace) {
+      setNamespaceSlug(prefill.namespace)
+      return
+    }
+
+    setNamespaceSlug((current) => current || defaultNamespaceSlug)
+  }, [defaultNamespaceSlug, prefill.namespace])
+
+  useEffect(() => {
     setVisibility(prefill.visibility)
-  }, [prefill.namespace, prefill.visibility])
+  }, [prefill.visibility])
 
   const handleRemoveSelectedFile = () => {
     setSelectedFile(null)

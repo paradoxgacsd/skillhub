@@ -2,8 +2,6 @@ import { type MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Check,
-  ChevronLeft,
-  ChevronRight,
   Copy,
   Download,
   Star,
@@ -22,6 +20,7 @@ interface PromotionSlotDisplayProps {
   slotCode: string
   variant?: PromotionSlotDisplayVariant
   maxItems?: number
+  rotationIntervalMs?: number
   className?: string
 }
 
@@ -55,9 +54,6 @@ function PromotionItemCard({
   activeIndex,
   totalItems,
   onClick,
-  onPrevious,
-  onNext,
-  onSelect,
 }: {
   item: PromotionSlotItem
   variant: PromotionSlotDisplayVariant
@@ -65,9 +61,6 @@ function PromotionItemCard({
   activeIndex: number
   totalItems: number
   onClick: (event: MouseEvent<HTMLAnchorElement>, item: PromotionSlotItem) => void
-  onPrevious: () => void
-  onNext: () => void
-  onSelect: (index: number) => void
 }) {
   const { t } = useTranslation()
   const [copied, copy] = useCopyToClipboard()
@@ -133,7 +126,7 @@ function PromotionItemCard({
       />
       <div className="pointer-events-none relative z-10 flex min-w-0 items-center gap-3 pl-2">
         <div className="min-w-0 flex-1">
-          <h3 className={cn('line-clamp-1 font-heading text-sm font-semibold leading-tight transition-colors md:text-base', isPinned ? 'text-white' : 'text-slate-950 group-hover:text-emerald-800')}>
+          <h3 className={cn('line-clamp-1 font-heading text-base font-semibold leading-tight transition-colors md:text-lg', isPinned ? 'text-white' : 'text-slate-950 group-hover:text-emerald-800')}>
             {displayName}
           </h3>
           {summary ? (
@@ -150,28 +143,6 @@ function PromotionItemCard({
 
         <div className="pointer-events-auto flex shrink-0 flex-col items-end gap-1.5">
           <div className="flex items-center gap-1">
-            {hasMultiple ? (
-              <>
-                <button
-                  type="button"
-                  className={iconButtonClassName}
-                  title={t('promotionSlots.previous')}
-                  aria-label={t('promotionSlots.previous')}
-                  onClick={onPrevious}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  className={iconButtonClassName}
-                  title={t('promotionSlots.next')}
-                  aria-label={t('promotionSlots.next')}
-                  onClick={onNext}
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </>
-            ) : null}
             {installCommand ? (
               <button
                 type="button"
@@ -202,20 +173,17 @@ function PromotionItemCard({
       </div>
 
       {hasMultiple ? (
-        <div className="pointer-events-auto absolute bottom-1.5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1">
+        <div className="pointer-events-none absolute bottom-1.5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1">
           {Array.from({ length: totalItems }, (_, index) => (
-            <button
+            <span
               key={index}
-              type="button"
               className={cn(
                 'h-1.5 rounded-full transition-all',
                 index === activeIndex
                   ? isPinned ? 'w-4 bg-amber-300' : 'w-4 bg-emerald-600'
                   : isPinned ? 'w-1.5 bg-white/35' : 'w-1.5 bg-slate-300',
               )}
-              aria-label={t('promotionSlots.goTo', { index: index + 1, total: totalItems })}
-              aria-current={index === activeIndex ? 'true' : undefined}
-              onClick={() => onSelect(index)}
+              aria-hidden="true"
             />
           ))}
         </div>
@@ -232,6 +200,7 @@ export function PromotionSlotDisplay({
   slotCode,
   variant = 'strip',
   maxItems = 3,
+  rotationIntervalMs = 5000,
   className,
 }: PromotionSlotDisplayProps) {
   const { data: items, isLoading, error } = usePromotionSlot(slotCode)
@@ -258,9 +227,9 @@ export function PromotionSlotDisplay({
     }
     const intervalId = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % visibleItems.length)
-    }, 5000)
+    }, rotationIntervalMs)
     return () => window.clearInterval(intervalId)
-  }, [visibleItems.length])
+  }, [rotationIntervalMs, visibleItems.length])
 
   useEffect(() => {
     if (!activeItem || recordedImpressions.current.has(activeItem.campaignId)) {
@@ -311,9 +280,6 @@ export function PromotionSlotDisplay({
         activeIndex={visibleItems.indexOf(activeItem)}
         totalItems={visibleItems.length}
         onClick={recordClickAndNavigate}
-        onPrevious={() => setActiveIndex((current) => (current - 1 + visibleItems.length) % visibleItems.length)}
-        onNext={() => setActiveIndex((current) => (current + 1) % visibleItems.length)}
-        onSelect={setActiveIndex}
       />
     </section>
   )

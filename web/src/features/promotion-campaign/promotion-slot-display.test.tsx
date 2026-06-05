@@ -76,9 +76,7 @@ describe('PromotionSlotDisplay', () => {
     expect(screen.getByText('Launch Assistant Skill')).toBeTruthy()
     expect(screen.queryByText('@global/launch-assistant')).toBeNull()
     expect(screen.getByText('Automates launch planning')).toBeTruthy()
-    await waitFor(() => {
-      expect(recordPromotionEventMock).toHaveBeenCalledWith({ id: 7, eventType: 'IMPRESSION' })
-    })
+    expect(recordPromotionEventMock).toHaveBeenCalledWith({ id: 7, eventType: 'IMPRESSION' })
 
     fireEvent.click(screen.getByRole('link'))
 
@@ -118,24 +116,24 @@ describe('PromotionSlotDisplay', () => {
       error: null,
     })
 
-    render(<PromotionSlotDisplay slotCode="HOME_HERO" maxItems={2} />)
+    render(<PromotionSlotDisplay slotCode="HOME_HERO" maxItems={2} rotationIntervalMs={10} />)
 
     const slot = screen.getByLabelText('HOME_HERO promotions')
     const initialClassName = slot.firstElementChild?.className
     expect(screen.getByText('Launch Assistant Skill')).toBeTruthy()
     expect(screen.queryByText('Deploy Assistant Skill')).toBeNull()
+    expect(screen.queryByLabelText('promotionSlots.previous')).toBeNull()
+    expect(screen.queryByLabelText('promotionSlots.next')).toBeNull()
     await waitFor(() => {
       expect(recordPromotionEventMock).toHaveBeenCalledWith({ id: 7, eventType: 'IMPRESSION' })
     })
 
-    fireEvent.click(screen.getByLabelText('promotionSlots.next'))
-
-    expect(screen.getByText('Deploy Assistant Skill')).toBeTruthy()
-    expect(screen.queryByText('Launch Assistant Skill')).toBeNull()
-    expect(slot.firstElementChild?.className).not.toBe(initialClassName)
     await waitFor(() => {
-      expect(recordPromotionEventMock).toHaveBeenCalledWith({ id: 8, eventType: 'IMPRESSION' })
+      expect(screen.getByText('Deploy Assistant Skill')).toBeTruthy()
+      expect(screen.queryByText('Launch Assistant Skill')).toBeNull()
     })
+    expect(slot.firstElementChild?.className).not.toBe(initialClassName)
+    expect(recordPromotionEventMock).toHaveBeenCalledWith({ id: 8, eventType: 'IMPRESSION' })
   })
 
   it('copies the same clawhub install command used by skill cards', async () => {
