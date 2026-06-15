@@ -4,6 +4,7 @@ import { Layout } from './layout'
 import { getCurrentUser } from '@/api/client'
 import { RoleGuard } from '@/shared/components/role-guard'
 import { createRequireAuth } from '@/shared/lib/auth-route'
+import { APP_BASE_PATH } from '@/shared/lib/app-base'
 import { normalizeSearchQuery } from '@/shared/lib/search-query'
 
 /**
@@ -464,6 +465,7 @@ const routeTree = rootRoute.addChildren([
 
 export const router = createRouter({
   routeTree,
+  basepath: APP_BASE_PATH,
   defaultNotFoundComponent: DefaultNotFound,
 })
 

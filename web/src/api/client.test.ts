@@ -79,8 +79,8 @@ describe('WEB_API_PREFIX', () => {
 })
 
 describe('buildApiUrl', () => {
-  it('returns the path as-is when no runtime base URL is configured', () => {
-    expect(buildApiUrl('/api/v1/auth/me')).toBe('/api/v1/auth/me')
+  it('uses the app base path when no runtime base URL is configured', () => {
+    expect(buildApiUrl('/api/v1/auth/me')).toBe('/skillhub/api/v1/auth/me')
   })
 
   it('prepends the runtime base URL when one is set', () => {

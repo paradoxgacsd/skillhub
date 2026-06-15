@@ -1,4 +1,5 @@
 import { redirect } from '@tanstack/react-router'
+import { stripAppBasePath } from './app-base'
 
 export type RouteLocationLike = {
   pathname: string
@@ -7,7 +8,7 @@ export type RouteLocationLike = {
 }
 
 export function buildReturnTo(location: RouteLocationLike) {
-  return `${location.pathname}${location.searchStr ?? ''}${location.hash ?? ''}`
+  return `${stripAppBasePath(location.pathname)}${location.searchStr ?? ''}${location.hash ?? ''}`
 }
 
 export function createRequireAuth(getCurrentUser: () => Promise<unknown>) {

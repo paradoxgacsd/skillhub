@@ -16,7 +16,7 @@ describe('buildShareText', () => {
     expect(lines).toHaveLength(3)
     expect(lines[0]).toBe('my-skill')
     expect(lines[1]).toBe('Test description')
-    expect(lines[2]).toBe('https://skill.example.com/space/global/my-skill')
+    expect(lines[2]).toBe('https://skill.example.com/skillhub/space/global/my-skill')
   })
 
   it('builds share text for namespaced skill', () => {
@@ -26,7 +26,7 @@ describe('buildShareText', () => {
     expect(lines).toHaveLength(3)
     expect(lines[0]).toBe('team-alpha/my-skill')
     expect(lines[1]).toBe('Test description')
-    expect(lines[2]).toBe('https://skill.example.com/space/team-alpha/my-skill')
+    expect(lines[2]).toBe('https://skill.example.com/skillhub/space/team-alpha/my-skill')
   })
 
   it('includes full description without truncation', () => {
@@ -50,6 +50,6 @@ describe('buildShareText', () => {
     const lines = result.split('\n')
 
     expect(lines).toHaveLength(3)
-    expect(lines[2]).toBe('https://skill.example.com/space/global/my-skill')
+    expect(lines[2]).toBe('https://skill.example.com/skillhub/space/global/my-skill')
   })
 })

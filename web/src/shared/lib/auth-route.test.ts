@@ -11,6 +11,14 @@ describe('auth-route', () => {
     })).toBe('/space/global/caldav-calendar?tab=files#readme')
   })
 
+  it('buildReturnTo removes the deployment base path', () => {
+    expect(buildReturnTo({
+      pathname: '/skillhub/space/global/caldav-calendar',
+      searchStr: '?tab=files',
+      hash: '#readme',
+    })).toBe('/space/global/caldav-calendar?tab=files#readme')
+  })
+
   it('createRequireAuth redirects unauthenticated users to login with returnTo', async () => {
     const requireAuth = createRequireAuth(async () => null)
 

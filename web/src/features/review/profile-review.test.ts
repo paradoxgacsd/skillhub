@@ -95,14 +95,14 @@ describe('adminApi profile review methods', () => {
 
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      '/api/v1/admin/profile-reviews?status=APPROVED&page=1&size=10&sortDirection=ASC',
+      '/skillhub/api/v1/admin/profile-reviews?status=APPROVED&page=1&size=10&sortDirection=ASC',
       expect.objectContaining({
         headers: expect.any(Headers),
       }),
     )
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
-      '/api/web/reviews?status=REJECTED&namespaceId=9&page=2&size=5&sortDirection=ASC',
+      '/skillhub/api/web/reviews?status=REJECTED&namespaceId=9&page=2&size=5&sortDirection=ASC',
       expect.objectContaining({
         headers: expect.any(Headers),
       }),

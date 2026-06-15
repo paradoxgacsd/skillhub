@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Bot, Check, Copy, UserRound } from 'lucide-react'
 import { useCopyToClipboard } from '@/shared/lib/clipboard'
+import { getRuntimeAppBaseUrl } from '@/shared/lib/app-base'
 
 type LandingQuickStartTabId = 'agent' | 'human'
 
@@ -21,14 +22,7 @@ function getAppBaseUrl(): string {
   if (typeof window === 'undefined') {
     return ''
   }
-  const runtimeConfig = window.__SKILLHUB_RUNTIME_CONFIG__
-  const configuredUrl = runtimeConfig?.appBaseUrl
-  // Use configured URL only if it's set and not localhost
-  if (configuredUrl && !configuredUrl.includes('localhost')) {
-    return configuredUrl
-  }
-  // Fallback to current page origin
-  return `${window.location.protocol}//${window.location.host}`
+  return getRuntimeAppBaseUrl(window.__SKILLHUB_RUNTIME_CONFIG__) ?? ''
 }
 
 function CompactCopyButton({ text }: { text: string }) {

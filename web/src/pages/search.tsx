@@ -13,6 +13,7 @@ import { Pagination } from '@/shared/components/pagination'
 import { useSearchSkills } from '@/shared/hooks/use-skill-queries'
 import { useVisibleLabels } from '@/shared/hooks/use-label-queries'
 import { useMyStars } from '@/shared/hooks/use-user-queries'
+import { stripAppBasePath } from '@/shared/lib/app-base'
 import { normalizeSearchQuery } from '@/shared/lib/search-query'
 import { Button } from '@/shared/ui/button'
 import { APP_SHELL_PAGE_CLASS_NAME } from '@/app/page-shell-style'
@@ -177,7 +178,7 @@ export function SearchPage() {
       navigate({
         to: '/login',
         search: {
-          returnTo: `${window.location.pathname}${window.location.search}${window.location.hash}`,
+          returnTo: `${stripAppBasePath(window.location.pathname)}${window.location.search}${window.location.hash}`,
         },
       })
       return

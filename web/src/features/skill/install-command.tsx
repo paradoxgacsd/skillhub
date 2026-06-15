@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Check, Copy } from 'lucide-react'
 import { Button } from '@/shared/ui/button'
 import { useCopyToClipboard } from '@/shared/lib/clipboard'
+import { DEFAULT_REGISTRY_URL, getRuntimeAppBaseUrl } from '@/shared/lib/app-base'
 
 interface InstallCommandProps {
   namespace: string
@@ -16,16 +17,9 @@ export function buildInstallTarget(namespace: string, slug: string): string {
 
 export function getBaseUrl(): string {
   if (typeof window === 'undefined') {
-    return ''
+    return DEFAULT_REGISTRY_URL
   }
-  const runtimeConfig = window.__SKILLHUB_RUNTIME_CONFIG__
-  const configuredUrl = runtimeConfig?.appBaseUrl
-  // Use configured URL only if it's set and not localhost
-  if (configuredUrl && !configuredUrl.includes('localhost')) {
-    return configuredUrl
-  }
-  // Fallback to current page origin
-  return `${window.location.protocol}//${window.location.host}`
+  return getRuntimeAppBaseUrl(window.__SKILLHUB_RUNTIME_CONFIG__) ?? DEFAULT_REGISTRY_URL
 }
 
 export function buildInstallCommand(namespace: string, slug: string, baseUrl: string): string {

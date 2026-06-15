@@ -10,56 +10,84 @@ server {
     gzip_types text/plain text/css application/json application/javascript text/xml;
     gzip_min_length 1000;
 
-    location / {
-        try_files $uri $uri/ /index.html;
+    location = / {
+        return 302 /skillhub/;
     }
 
-    location /api/ {
+    location = /skillhub {
+        return 301 /skillhub/;
+    }
+
+    location /skillhub/ {
+        try_files $uri $uri/ /skillhub/index.html;
+    }
+
+    location /skillhub/api/ {
+        rewrite ^/skillhub(/api/.*)$ $1 break;
         proxy_pass ${SKILLHUB_API_UPSTREAM};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-Prefix /skillhub;
     }
 
-    location /oauth2/ {
+    location /skillhub/oauth2/ {
+        rewrite ^/skillhub(/oauth2/.*)$ $1 break;
         proxy_pass ${SKILLHUB_API_UPSTREAM};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-Prefix /skillhub;
     }
 
-    location /login/oauth2/ {
+    location /skillhub/login/oauth2/ {
+        rewrite ^/skillhub(/login/oauth2/.*)$ $1 break;
         proxy_pass ${SKILLHUB_API_UPSTREAM};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-Prefix /skillhub;
     }
 
-    location /.well-known/ {
+    location /skillhub/.well-known/ {
+        rewrite ^/skillhub(/\.well-known/.*)$ $1 break;
         proxy_pass ${SKILLHUB_API_UPSTREAM};
         proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-Prefix /skillhub;
     }
 
-    location /assets/ {
+    location /skillhub/assets/ {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
 
-    location = /registry/skill.md {
+    location = /skillhub/registry/skill.md {
         default_type text/plain;
         add_header Content-Disposition "inline";
         add_header X-Content-Type-Options "nosniff";
         try_files $uri =404;
     }
 
-    location = /runtime-config.js {
+    location = /skillhub/runtime-config.js {
         add_header Cache-Control "no-store";
         try_files $uri =404;
     }
 
-    location /nginx-health {
+    location /skillhub/nginx-health {
         return 200 'ok';
         add_header Content-Type text/plain;
     }

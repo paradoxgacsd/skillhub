@@ -22,7 +22,7 @@ public class OpenApiConfig {
                         .description("Skills Registry Platform")
                         .version("0.1.0-beta.7"))
                 .servers(List.of(
-                        new Server().url("http://localhost:8080").description("Local development")
+                        new Server().url("http://localhost:8085").description("Local development")
                 ));
     }
 }

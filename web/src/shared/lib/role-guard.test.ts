@@ -49,4 +49,13 @@ describe('buildLoginRedirect', () => {
       },
     })
   })
+
+  it('removes the deployment base path from returnTo', () => {
+    expect(buildLoginRedirect('/skillhub/dashboard/reviews/13', '?tab=pending', '#panel')).toEqual({
+      to: '/login',
+      search: {
+        returnTo: '/dashboard/reviews/13?tab=pending#panel',
+      },
+    })
+  })
 })

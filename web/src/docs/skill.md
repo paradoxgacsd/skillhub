@@ -7,7 +7,7 @@ description: Use this when you need to search, inspect, install, or publish agen
 
 Use this skill when you need to work with a SkillHub registry: search skills, inspect metadata, install a package, or publish a new version.
 
-> Important: Prefer the `clawhub` CLI for registry workflows. SkillHub exposes a ClawHub-compatible API surface and a discovery endpoint at `/.well-known/clawhub.json`, so the CLI is the safest path for auth, resolution, and download behavior. Only fall back to raw HTTP when debugging the server itself.
+> Important: Prefer the `clawhub` CLI for registry workflows. SkillHub exposes a ClawHub-compatible API surface and a discovery endpoint at `/skillhub/.well-known/clawhub.json`, so the CLI is the safest path for auth, resolution, and download behavior. Only fall back to raw HTTP when debugging the server itself.
 
 ## What SkillHub Is
 
@@ -29,13 +29,13 @@ Key facts:
 Point `clawhub` at the SkillHub base URL:
 
 ```bash
-export CLAWHUB_REGISTRY=https://skillhub.your-company.com
+export CLAWHUB_REGISTRY=https://skillhub.your-company.com/skillhub
 ```
 
 Alternatively, use the `--registry` parameter every time, for example:
 
 ```bash
-npx clawhub install my-skill --registry https://skillhub.your-company.com
+npx clawhub install my-skill --registry https://skillhub.your-company.com/skillhub
 ```
 
 
@@ -48,7 +48,7 @@ clawhub login --token sk_your_api_token_here
 Optional local check:
 
 ```bash
-curl https://skillhub.your-company.com/.well-known/clawhub.json
+curl https://skillhub.your-company.com/skillhub/.well-known/clawhub.json
 ```
 
 Expected response:

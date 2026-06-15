@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Share2, Check } from 'lucide-react'
 import { useCopyToClipboard } from '@/shared/lib/clipboard'
+import { ensureAppBaseUrl } from '@/shared/lib/app-base'
 import { getBaseUrl } from './install-command'
 
 interface ShareButtonProps {
@@ -19,7 +20,7 @@ export function buildShareText(
   baseUrl: string,
   t: (key: string) => string,
 ): string {
-  const skillUrl = `${baseUrl}/space/${namespace}/${encodeURIComponent(slug)}`
+  const skillUrl = `${ensureAppBaseUrl(baseUrl)}/space/${namespace}/${encodeURIComponent(slug)}`
   const displayName = namespace === 'global' ? slug : `${namespace}/${slug}`
   const fullDesc = description || t('skillDetail.share.defaultDescription')
 

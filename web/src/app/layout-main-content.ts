@@ -1,3 +1,5 @@
+import { stripAppBasePath } from '@/shared/lib/app-base'
+
 export const LANDING_MAIN_CLASS_NAME = 'flex-1 relative z-10'
 export const DEFAULT_MAIN_CLASS_NAME = 'flex-1 relative z-10 px-6 py-10 md:px-12'
 export const CENTERED_MAIN_CLASS_NAME = 'flex-1 relative z-10 px-4 py-8 sm:px-6 md:px-8 md:py-10 lg:px-10 xl:px-14 2xl:px-20'
@@ -17,21 +19,23 @@ export function resolveAppMainContentPathname(
 }
 
 export function getAppMainContentLayout(pathname: string): AppMainContentLayout {
-  if (pathname === '/') {
+  const normalizedPathname = stripAppBasePath(pathname)
+
+  if (normalizedPathname === '/') {
     return {
       mainClassName: LANDING_MAIN_CLASS_NAME,
       contentClassName: '',
     }
   }
 
-  if (pathname === '/search') {
+  if (normalizedPathname === '/search') {
     return {
       mainClassName: CENTERED_MAIN_CLASS_NAME,
       contentClassName: CENTERED_SEARCH_CONTENT_CLASS_NAME,
     }
   }
 
-  if (pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
+  if (normalizedPathname === '/dashboard' || normalizedPathname.startsWith('/dashboard/')) {
     return {
       mainClassName: CENTERED_MAIN_CLASS_NAME,
       contentClassName: CENTERED_DASHBOARD_CONTENT_CLASS_NAME,

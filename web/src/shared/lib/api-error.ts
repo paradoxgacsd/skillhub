@@ -1,4 +1,5 @@
 import i18n from '@/i18n/config'
+import { buildAppUrl } from './app-base'
 import { toast } from './toast'
 
 const ACCOUNT_DISABLED_REASON = 'accountDisabled'
@@ -59,11 +60,11 @@ export function handleApiError(error: unknown): void {
 
   if (status === 401) {
     if (isAccountDisabledError(error)) {
-      window.location.href = `/login?reason=${ACCOUNT_DISABLED_REASON}`
+      window.location.href = buildAppUrl(`/login?reason=${ACCOUNT_DISABLED_REASON}`)
       return
     }
     toast.error(i18n.t('apiError.unauthorized'))
-    window.location.href = '/login'
+    window.location.href = buildAppUrl('/login')
     return
   }
 

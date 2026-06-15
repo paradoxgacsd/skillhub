@@ -1,3 +1,4 @@
+import { buildApiUrl } from '@/api/client'
 import type { TargetType } from './types'
 
 /**
@@ -29,7 +30,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
   const csrf = getCsrfToken()
   if (csrf) headers.set('X-XSRF-TOKEN', csrf)
-  const res = await fetch(path, { ...init, headers, credentials: 'include' })
+  const res = await fetch(buildApiUrl(path), { ...init, headers, credentials: 'include' })
   if (!res.ok) {
     throw new Error(`Request failed: ${res.status}`)
   }

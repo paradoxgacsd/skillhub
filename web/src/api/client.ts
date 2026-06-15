@@ -44,6 +44,7 @@ import type {
 } from './types'
 import { ApiError } from '@/shared/lib/api-error'
 import i18n from '@/i18n/config'
+import { getRuntimeApiBaseUrl } from '@/shared/lib/app-base'
 
 /**
  * Front-end API foundation for generated OpenAPI calls and hand-written convenience wrappers.
@@ -79,7 +80,7 @@ function getRuntimeConfig(): RuntimeConfig {
 }
 
 function getApiBaseUrl(): string {
-  return getRuntimeConfig().apiBaseUrl ?? ''
+  return getRuntimeApiBaseUrl(getRuntimeConfig())
 }
 
 function parseBooleanFlag(value: string | undefined): boolean {
@@ -378,7 +379,7 @@ export const authApi = {
   },
 
   async logout(): Promise<void> {
-    const response = await fetch('/api/v1/auth/logout', {
+    const response = await fetch(withBaseUrl('/api/v1/auth/logout'), {
       method: 'POST',
       headers: withCsrf(),
     })

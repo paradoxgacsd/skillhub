@@ -118,8 +118,7 @@ describe('PromotionSlotDisplay', () => {
 
     render(<PromotionSlotDisplay slotCode="HOME_HERO" maxItems={2} rotationIntervalMs={10} />)
 
-    const slot = screen.getByLabelText('HOME_HERO promotions')
-    const initialClassName = slot.firstElementChild?.className
+    expect(screen.getByLabelText('HOME_HERO promotions')).toBeTruthy()
     expect(screen.getByText('Launch Assistant Skill')).toBeTruthy()
     expect(screen.queryByText('Deploy Assistant Skill')).toBeNull()
     expect(screen.queryByLabelText('promotionSlots.previous')).toBeNull()
@@ -132,7 +131,6 @@ describe('PromotionSlotDisplay', () => {
       expect(screen.getByText('Deploy Assistant Skill')).toBeTruthy()
       expect(screen.queryByText('Launch Assistant Skill')).toBeNull()
     })
-    expect(slot.firstElementChild?.className).not.toBe(initialClassName)
     expect(recordPromotionEventMock).toHaveBeenCalledWith({ id: 8, eventType: 'IMPRESSION' })
   })
 

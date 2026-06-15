@@ -1,3 +1,5 @@
+import { stripAppBasePath } from './app-base'
+
 export function canAccessRoute(userRoles: readonly string[] | undefined, requiredRoles: readonly string[]) {
   if (!userRoles || userRoles.length === 0) {
     return false
@@ -18,7 +20,7 @@ export function buildLoginRedirect(pathname: string, search = '', hash = '') {
   return {
     to: '/login' as const,
     search: {
-      returnTo: `${pathname}${search}${hash}`,
+      returnTo: `${stripAppBasePath(pathname)}${search}${hash}`,
     },
   }
 }

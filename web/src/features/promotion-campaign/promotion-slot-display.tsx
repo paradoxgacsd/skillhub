@@ -69,7 +69,8 @@ function PromotionItemCard({
   const isHero = variant === 'hero'
   const displayName = item.targetName || item.title
   const summary = item.targetSummary || item.subtitle
-  const palette = PROMOTION_CARD_PALETTES[activeIndex % PROMOTION_CARD_PALETTES.length]
+  const paletteIndex = activeIndex % PROMOTION_CARD_PALETTES.length
+  const palette = PROMOTION_CARD_PALETTES[paletteIndex]
   const installCommand = useMemo(() => {
     if (item.targetType !== 'SKILL' || !item.targetNamespace || !item.targetSlug) {
       return null
@@ -271,13 +272,18 @@ export function PromotionSlotDisplay({
     return null
   }
 
+  const activeItemIndex = Math.max(
+    0,
+    visibleItems.findIndex((item) => item.campaignId === activeItem.campaignId),
+  )
+
   return (
     <section className={className} aria-label={`${slotCode} promotions`}>
       <PromotionItemCard
         item={activeItem}
         variant={variant}
         hasMultiple={visibleItems.length > 1}
-        activeIndex={visibleItems.indexOf(activeItem)}
+        activeIndex={activeItemIndex}
         totalItems={visibleItems.length}
         onClick={recordClickAndNavigate}
       />

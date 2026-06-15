@@ -65,22 +65,22 @@ describe('install-command', () => {
   it('uses the runtime app base url when available', () => {
     setMockWindow('https://app.example.com')
 
-    expect(getBaseUrl()).toBe('https://app.example.com')
+    expect(getBaseUrl()).toBe('https://app.example.com/skillhub')
   })
 
   it('falls back to the browser origin when the app base url is missing', () => {
     setMockWindow()
-    expect(getBaseUrl()).toBe('https://fallback.example.com')
+    expect(getBaseUrl()).toBe('https://fallback.example.com/skillhub')
   })
 
   it('falls back to browser origin when app base url is localhost', () => {
     setMockWindow('http://localhost')
-    expect(getBaseUrl()).toBe('https://fallback.example.com')
+    expect(getBaseUrl()).toBe('https://fallback.example.com/skillhub')
   })
 
   it('falls back to browser origin when app base url contains localhost', () => {
     setMockWindow('http://localhost:8080')
-    expect(getBaseUrl()).toBe('https://fallback.example.com')
+    expect(getBaseUrl()).toBe('https://fallback.example.com/skillhub')
   })
 
   it('renders the install command in a more compact code block', () => {
